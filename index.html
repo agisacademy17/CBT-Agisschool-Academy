@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jagat Data: Jawara Tatar Sunda</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel compiler for JSX in browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background-color: #020617;
+    }
+    /* Simple fade-in animation */
+    .animate-fadeIn {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <!-- MAIN APPLICATION CODE (JSX) -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Secure local storage fallbacks for sandboxed iframe
+    const safeStorage = {
+      getItem: (key) => {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+      },
+      setItem: (key, value) => {
+        try { localStorage.setItem(key, value); } catch (e) {}
+      },
+      removeItem: (key) => {
+        try { localStorage.removeItem(key); } catch (e) {}
+      }
+    };
+
+    const LEVEL_EXPLANATIONS = {
+      1: {
+        title: "KAMPUNG ALGORITMA: Konsep Koding Dasar",
+        desc: "Sampurasun, Jawara! Di Kampung Algoritma, kita akan belajar dasar-dasar pemecahan masalah yaitu <b>Algoritma (Sequence)</b>, <b>Perulangan (Loop)</b>, dan <b>Kondisi (If-Else)</b>. Komputer itu kaku, mereka membaca perintah dari baris teratas ke baris terbawah secara berurutan. Sekarang, bantulah emak-emak desa menyusun urutan (Sequence) membuat nasi liwet sunda yang benar agar masakan tidak berantakan!"
+      },
+      2: {
+        title: "LEUWEUNG DATA: Konsep Analisis Data",
+        desc: "Aduh, Jawara! Di Leuweung Data, data hasil panen desa kita tercampur baur dengan data tidak valid dan data ganda (duplikat). Ini membuat lumbung kita (Leuit) tidak efisien. Kita harus belajar <b>Data Cleaning (Pembersihan Data)</b> dan <b>Visualisasi Data</b>. Bersihkan baris-baris data kotor dan duplikat dari database pertanian kita agar distribusi merata!"
+      },
+      3: {
+        title: "CURUG AI: Konsep Kecerdasan Artifisial (AI)",
+        desc: "Sampurasun! Di Curug AI mistis ini, robot penjaga Batara Data lupa membedakan mana <b>Tanaman Obat</b> (seperti Daun Sirih) dan mana <b>Tanaman Beracun</b> (seperti Daun Jelatang). Kita harus melatih model AI menggunakan <b>Data Latih (Training Data)</b> agar Batara Data bisa melakukan klasifikasi dengan akurasi tinggi!"
+      },
+      4: {
+        title: "KOTA MAHADATA: Konsep Pemanfaatan Big Data 3V",
+        desc: "Waduh! Kota futuristik kita kebanjiran jutaan data lalu lintas, media sosial, dan polusi udara. Inilah fenomena <b>Big Data</b> dengan prinsip <b>3V: Volume (Besar), Velocity (Cepat), dan Variety (Beragam)</b>. Bantu filter aliran data super cepat menggunakan sistem 'Saring Jagat' agar kota tidak mengalami kelumpuhan!"
+      },
+      5: {
+        title: "PUNCAK PUSAKA: Integrasi Sistem & Penumpasan Hoaks",
+        desc: "Jawara! Kita telah sampai di puncak sakral Gunung Gede Pangrango. Raksasa Kabut Informasi menyerang dengan badai hoaks (kabar palsu)! Kita harus mengintegrasikan semua ilmu: Algoritma, Pembersihan Data, dan AI untuk menyaring fakta vs hoaks serta memulihkan sistem keamanan Tatar Sunda! <b>Hati-hati! Kamu hanya punya 20 detik untuk menjawab setiap pertanyaan, dan maksimal 3 kali kesalahan!</b>"
+      }
+    };
+
+    const LEVEL_MATERI_DATA = {
+      1: {
+        materiTitle: "Dasar Pemrograman & Logika Komputasional",
+        materiConcept: "Untuk menggerakkan mesin secara terarah, kita menyusun barisan kode instruksi yang sistematis. Konsep utama koding dasar meliputi:",
+        materiPoints: [
+          "<b>Sequence (Urutan):</b> Komputer mengeksekusi barisan kode baris-demi-baris secara kaku dari atas ke bawah. Urutan tindakan yang terbalik dapat menyebabkan kegagalan logika.",
+          "<b>Loop (Perulangan):</b> Mencegah pengetikan instruksi serupa secara berulang. Berguna untuk memproses instruksi otomatis.",
+          "<b>Condition (Kondisi/If-Else):</b> Mengatur komputer untuk mengambil keputusan logis yang berbeda tergantung pada situasi data yang ditemui."
+        ],
+        materiUsage: "Digunakan di Kampung Algoritma untuk menuntun siswa mengatur aktivitas pembuatan Nasi Liwet Sunda tradisional secara logis."
+      },
+      2: {
+        materiTitle: "Pembersihan, Struktur, & Interpretasi Data",
+        materiConcept: "Dalam teknologi informasi, data mentah harus diolah agar layak dibaca. Tahapan pengolahan data meliputi:",
+        materiPoints: [
+          "<b>Jenis Data:</b> Membedakan data kualitatif (non-angka, kategori) dan kuantitatif (angka kuantitas).",
+          "<b>Data Cleaning:</b> Membersihkan data rusak, kosong (NaN), atau data ganda (duplikat) agar tidak membiaskan keputusan akhir.",
+          "<b>Visualisasi & Interpretasi:</b> Memetakan data angka ke dalam grafik visual sehingga mudah dianalisis untuk menentukan keputusan, seperti pola ramalan musim tanam (Pranata Mangsa)."
+        ],
+        materiUsage: "Digunakan di Leuweung Data untuk merestorasi database pertanian lumbung pangan (Leuit) desa."
+      },
+      3: {
+        materiTitle: "Konsep Kecerdasan Artifisial & Klasifikasi",
+        materiConcept: "Kecerdasan Buatan (AI) meniru cara berpikir kognitif manusia dengan menganalisis pola informasi historis:",
+        materiPoints: [
+          "<b>Data Latih (Training Data):</b> Kumpulan sampel data (contoh: foto-foto tanaman herbal) yang diinput agar sistem AI mengenali ciri visualnya.",
+          "<b>Klasifikasi (Classification):</b> Algoritma AI yang mengelompokkan data baru ke dalam kelompok atau label yang sesuai.",
+          "<b>Akurasi & Bias:</b> Jika data latih yang dimasukkan berat sebelah, keputusan klasifikasi AI akan mengalami bias dan menghasilkan akurasi yang buruk."
+        ],
+        materiUsage: "Digunakan di Curug AI untuk melatih modul klasifikasi Bot Batara Data agar mampu mengidentifikasi tanaman obat berkhasiat."
+      },
+      4: {
+        materiTitle: "Karakteristik & Teknologi Mahadata (Big Data 3V)",
+        materiConcept: "Ketika jumlah data melampaui kemampuan penyimpanan sistem komputer konvensional, fenomena Mahadata terjadi dengan tiga ciri utama (3V):",
+        materiPoints: [
+          "<b>Volume (Ukuran):</b> Ukuran data masif berskala Terabyte hingga Zettabyte yang disimpan dalam media penyimpanan.",
+          "<b>Velocity (Kecepatan):</b> Laju perpindahan data yang mengalir secara real-time dan berkecepatan tinggi, seperti arus media sosial atau sensor IoT.",
+          "<b>Variety (Keberagaman):</b> Data hadir dalam ragam format tidak terstruktur seperti gambar, video, koordinat GPS, dan teks."
+        ],
+        materiUsage: "Digunakan di Kota Mahadata untuk mengoperasikan dasbor sensor perkotaan Sunda pintar."
+      },
+      5: {
+        materiTitle: "Integrasi Sistem & Etika Kebijakan Siber",
+        materiConcept: "Di level puncak ini, tidak ada materi baru, melainkan integrasi penuh dari:",
+        materiPoints: [
+          "<b>Computational Thinking:</b> Menyusun struktur pertahanan.",
+          "<b>Data Cleaning & Analysis:</b> Menyaring serangan hoaks dari musuh.",
+          "<b>AI Model Optimization:</b> Menyetel ulang sistem pertahanan kecerdasan buatan Tatar Sunda agar kebal dari manipulasi data.",
+          "<b>Etika (Silih Asih, Silih Asah, Silih Asuh):</b> Memahami bahwa teknologi harus dikendalikan secara bijak untuk kemaslahatan manusia, bukan untuk merusak."
+        ],
+        materiUsage: "Digunakan di Puncak Pusaka untuk memprogram ulang pertahanan superkomputer Pusaka Jagat Data dari serangan siber."
+      }
+    };
+
+    const JAWARA_CHARACTERS = [
+      { id: 1, name: "Prabu", desc: "Jawara Logika Kuno", driveId: "1Z_15TxFbsADIwUfXdg3L8WEPSauwLmaR" },
+      { id: 2, name: "Siliwangi", desc: "Sumbu Pengetahuan", driveId: "1EWR1PFAPhRW_FSTcOEgFkqiUsMaWn0zo" },
+      { id: 3, name: "Rangga", desc: "Penerjemah Kode Sandi", driveId: "1MLb8ASA9tle6GuVXFDF0EqK5Q1IltjSs" },
+      { id: 4, name: "Purba", desc: "Pengawal Gerbang Data", driveId: "1rg_OpZEmx_3D3JC8T14As6zDcdRbZ63-" },
+      { id: 5, name: "Kamuning", desc: "Peneliti Hutan Adat", driveId: "1lyGD1hMx7P-HFGR4Jg3HwPPVpP2Cp6V6" },
+      { id: 6, name: "Pajajaran", desc: "Arsitek Jagat Baru", driveId: "1OzJ86JzI114k1G070OS6HNLcOgwgnows" },
+      { id: 7, name: "Bima", desc: "Pelatih Batara AI", driveId: "1DKn0XEh-1ciZRA4YufoalZpLoH7fwZ78" },
+      { id: 8, name: "Kusuma", desc: "Srikandi Big Data", driveId: "13CKevqWBvzfTyj3CIWUyporkSohgmS9U" },
+      { id: 9, name: "Surya", desc: "Penyaring Kabut Hoax", driveId: "1nDo_5STTLSN-O2ZlnySUGxm76u9Bvtic" },
+      { id: 10, name: "Subang", desc: "Penjaga Puncak Pusaka", driveId: "1de8cZffLNx2Rhn_KLP8PWdxky9kKCCTo" }
+    ];
+
+    const BOSS_QUIZ_DATA = [
+      {
+        stage: 1,
+        phase: "Fase 1: Logika Koding Kampung Algoritma",
+        question: "Di Kampung Algoritma, kita menyusun langkah membuat nasi liwet. Mengapa urutan (sequence) sangat penting dalam algoritma pemrograman?",
+        options: [
+          { key: "A", text: "Agar kode program terlihat lebih estetis, rapi, dan mudah dibaca tanpa mempengaruhi hasil eksekusi program.", isCorrect: false },
+          { key: "B", text: "Karena komputer mengeksekusi instruksi secara kaku baris-demi-baris dari atas ke bawah, sehingga kesalahan urutan menyebabkan kegagalan logika.", isCorrect: true },
+          { key: "C", text: "Agar ukuran file program menjadi lebih kecil saat dijalankan di komputer dengan memori terbatas.", isCorrect: false },
+          { key: "D", text: "Karena urutan instruksi dapat mendeteksi virus siber secara otomatis tanpa perlu antivirus eksternal.", isCorrect: false },
+          { key: "E", text: "Untuk memastikan bahwa semua variabel dalam memori komputer dideklarasikan dengan tipe data teks (string).", isCorrect: false }
+        ]
+      },
+      {
+        stage: 2,
+        phase: "Fase 2: Pembersihan Leuweung Data",
+        question: "Dalam pembersihan data (data cleaning) di Leuweung Data, apa langkah yang paling tepat jika kita menemukan data kosong (NaN/Null) pada kolom hasil panen?",
+        options: [
+          { key: "A", text: "Menghapus baris kosong tersebut atau mengisinya dengan nilai rata-rata (mean) atau estimasi logis yang valid.", isCorrect: true },
+          { key: "B", text: "Mengganti seluruh angka kosong tersebut dengan angka acak sesuka hati tanpa perhitungan agar tabel database cepat terisi penuh.", isCorrect: false },
+          { key: "C", text: "Membiarkan data kosong tersebut apa adanya karena komputer akan otomatis menebak nilai yang benar secara ajaib saat dianalisis.", isCorrect: false },
+          { key: "D", text: "Menyalin data dari baris pertama ke seluruh baris kosong tanpa melihat relevansi komoditas tanamannya.", isCorrect: false },
+          { key: "E", text: "Mengubah nama kolom tersebut menjadi teks kosong dan menyembunyikannya dari tampilan visualisasi grafik lumbung.", isCorrect: false }
+        ]
+      },
+      {
+        stage: 3,
+        phase: "Fase 3: Pelatihan Curug AI",
+        question: "Bagaimana cara terbaik meningkatkan akurasi klasifikasi AI Batara Data di Curug AI agar tidak salah membedakan tanaman obat dan racun?",
+        options: [
+          { key: "A", text: "Menghapus seluruh program klasifikasi AI dan menggantinya dengan mesin pencari berbasis kata kunci statis di internet.", isCorrect: false },
+          { key: "B", text: "Mengurangi jumlah data latih sekecil mungkin agar mesin AI tidak mengalami kelebihan beban memori saat berpikir.", isCorrect: false },
+          { key: "C", text: "Memberikan data latih (training data) yang seimbang, bervariasi, berukuran besar, serta melabelinya secara akurat.", isCorrect: true },
+          { key: "D", text: "Memasukkan data gambar tanaman obat saja ke dalam data latih dan mengabaikan contoh gambar tanaman beracun.", isCorrect: false },
+          { key: "E", text: "Menyerahkan sepenuhnya keputusan klasifikasi kepada insting pengguna tanpa melakukan pelatihan sistem sama sekali.", isCorrect: false }
+        ]
+      },
+      {
+        stage: 4,
+        phase: "Fase 4: Saringan Kota Mahadata",
+        question: "Karakteristik Big Data ditandai dengan prinsip 3V (Volume, Velocity, Variety). Manakah penjelasan yang paling tepat mengenai aspek Variety (Keberagaman)?",
+        options: [
+          { key: "A", text: "Kecepatan transmisi transfer data dalam jaringan siber serat optik perkotaan pintar yang sangat cepat secara real-time.", isCorrect: false },
+          { key: "B", text: "Ukuran kapasitas penyimpanan data digital yang sangat besar hingga mencapai skala Terabyte, Petabyte, atau Zettabyte.", isCorrect: false },
+          { key: "C", text: "Keberagaman aplikasi media sosial yang digunakan oleh masyarakat perkotaan untuk berkomunikasi sehari-hari.", isCorrect: false },
+          { key: "D", text: "Data hadir dalam berbagai macam format terstruktur dan tidak terstruktur, seperti teks, video, gambar, suara, log sensor, dan koordinat GPS.", isCorrect: true },
+          { key: "E", text: "Tingkat keandalan dan kebenaran sumber data yang digunakan dalam proses pengambilan keputusan pembangunan kota.", isCorrect: false }
+        ]
+      },
+      {
+        stage: 5,
+        phase: "Fase 5: Nilai Luhur Silih Asuh",
+        question: "Berdasarkan nilai luhur Sunda 'Silih Asuh' (saling membimbing), bagaimana etika menggunakan kecerdasan buatan (AI) dalam kehidupan siber sehari-hari?",
+        options: [
+          { key: "A", text: "Memanfaatkan AI untuk menyalin karya kreatif orang lain seutuhnya secara instan lalu mengakuinya sebagai buatan sendiri demi popularitas.", isCorrect: false },
+          { key: "B", text: "Saling melindungi privasi data, membagikan ilmu digital secara bijak, dan menggunakan AI secara bertanggung jawab demi kemaslahatan bersama.", isCorrect: true },
+          { key: "C", text: "Menggunakan teknologi AI untuk memproduksi konten hoaks secara massal guna meningkatkan jumlah pengikut di media sosial.", isCorrect: false },
+          { key: "D", text: "Membatasi penggunaan AI hanya untuk golongan elite tertentu dan melarang masyarakat umum mempelajarinya agar terhindar dari error.", isCorrect: false },
+          { key: "E", text: "Membiarkan sistem AI mengambil alih seluruh keputusan hidup manusia tanpa adanya pengawasan dan kendali moral dari pengguna.", isCorrect: false }
+        ]
+      }
+    ];
+
+    class WebSoundEngine {
+      constructor() {
+        this.muted = true;
+        this.tracks = {
+          tryAgain: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/TRY%20AGAIN.mp3"),
+          correct: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/JAWABAN%20BENAR.mp3"),
+          bgm1_4: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/MUSIK%20DALAM%20GAME.mp3"),
+          bgm5: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/MUSIK%20KETIKA%20LEVEL%20TERAKHIR.mp3"),
+          victory: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/VICTORY%20GAME.mp3"),
+          seruling: new Audio("https://github.com/agisacademy17/aset-gim-jagat-data/raw/refs/heads/main/freesound_community-seruling-sunda-34162.mp3")
+        };
+        
+        // Loop settings
+        this.tracks.bgm1_4.loop = true;
+        this.tracks.bgm5.loop = true;
+        this.tracks.seruling.loop = true;
+        this.tracks.victory.loop = false;
+        this.tracks.tryAgain.loop = false;
+        this.tracks.correct.loop = false;
+      }
+
+      setMute(mute) {
+        this.muted = mute;
+        Object.values(this.tracks).forEach(track => {
+          track.muted = mute;
+        });
+      }
+
+      playClick() {
+        if (this.muted) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.1);
+        } catch (e) {
+          console.warn("Click sound error:", e);
+        }
+      }
+
+      playTryAgain() {
+        this.stopAllBGM();
+        try {
+          this.tracks.tryAgain.currentTime = 0;
+          this.tracks.tryAgain.muted = this.muted;
+          this.tracks.tryAgain.play().catch(e => console.log("Audio play error", e));
+        } catch (e) {}
+      }
+
+      playCorrect() {
+        this.stopAllBGM();
+        try {
+          this.tracks.correct.currentTime = 0;
+          this.tracks.correct.muted = this.muted;
+          this.tracks.correct.play().catch(e => console.log("Audio play error", e));
+        } catch (e) {}
+      }
+
+      playSeruling() {
+        try {
+          if (this.tracks.seruling.paused && !this.muted) {
+            this.stopAllBGM();
+            this.tracks.seruling.currentTime = 0;
+            this.tracks.seruling.play().catch(e => console.log("Audio play error", e));
+          }
+        } catch (e) {}
+      }
+
+      stopSeruling() {
+        try {
+          this.tracks.seruling.pause();
+        } catch (e) {}
+      }
+
+      playBGM1_4() {
+        try {
+          if (this.tracks.bgm1_4.paused && !this.muted) {
+            this.stopAllBGM();
+            this.tracks.bgm1_4.currentTime = 0;
+            this.tracks.bgm1_4.play().catch(e => console.log("Audio play error", e));
+          }
+        } catch (e) {}
+      }
+
+      playBGM5() {
+        try {
+          if (this.tracks.bgm5.paused && !this.muted) {
+            this.stopAllBGM();
+            this.tracks.bgm5.currentTime = 0;
+            this.tracks.bgm5.play().catch(e => console.log("Audio play error", e));
+          }
+        } catch (e) {}
+      }
+
+      playVictory() {
+        this.stopAllBGM();
+        try {
+          this.tracks.victory.currentTime = 0;
+          this.tracks.victory.muted = this.muted;
+          this.tracks.victory.play().catch(e => console.log("Audio play error", e));
+        } catch (e) {}
+      }
+
+      stopAllBGM() {
+        try {
+          this.tracks.bgm1_4.pause();
+          this.tracks.bgm5.pause();
+          this.tracks.seruling.pause();
+        } catch (e) {}
+      }
+    }
+
+    const sounds = new WebSoundEngine();
+
+    const IconTrophy = () => (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9V2h12v7a6 6 0 01-12 0zm0 0a6 6 0 006 6h2a6 6 0 006-6M4 9h2m14 0h-2m-12 6h8m-4 0v5m-4 0h8" /></svg>
+    );
+    const IconVolume2 = () => (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" /></svg>
+    );
+    const IconVolumeX = () => (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-3h3l4.5 4.5V5.25L9.75 9.75H6.75v4.5z" /></svg>
+    );
+    const IconChevronRight = () => (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+    );
+    const IconShoppingBag = () => (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+    );
+
+    function App() {
+      const [screen, setScreen] = useState('splash');
+      const [score, setScore] = useState(0);
+      const [unlockedLevels, setUnlockedLevels] = useState([1]);
+      const [activeLevel, setActiveLevel] = useState(1);
+      const [learningPhase, setLearningPhase] = useState(true);
+      const [inventory, setInventory] = useState([]);
+      const [isMuted, setIsMuted] = useState(true);
+
+      // Registration variables
+      const [playerName, setPlayerName] = useState('');
+      const [playerClass, setPlayerClass] = useState('');
+      const [selectedChar, setSelectedChar] = useState(null);
+
+      // Active overlay modals
+      const [showToko, setShowToko] = useState(false);
+      const [showLeaderboard, setShowLeaderboard] = useState(false);
+      const [showCredit, setShowCredit] = useState(false);
+      const [showIntegration, setShowIntegration] = useState(false);
+      const [showDaftarPustaka, setShowDaftarPustaka] = useState(false);
+      const [scriptUrl, setScriptUrl] = useState('');
+
+      // Custom Alert Modal
+      const [alertOpen, setAlertOpen] = useState(false);
+      const [alertTitle, setAlertTitle] = useState('');
+      const [alertDesc, setAlertDesc] = useState('');
+      const [alertIcon, setAlertIcon] = useState('✨');
+      const [alertCallback, setAlertCallback] = useState(null);
+
+      // Level 1: Sequence Logic
+      const [lvl1Sequence, setLvl1Sequence] = useState([]);
+      const correctSequence = [
+        "Ambil Beras",
+        "Cuci Beras",
+        "Masukkan Air",
+        "Tambahkan Rempah (Sereh & Salam)",
+        "Nyalakan Api",
+        "Tunggu Masak"
+      ];
+      const [shuffledLvl1, setShuffledLvl1] = useState([]);
+
+      // Level 2: Data Cleaning Rows
+      const [lvl2Crops, setLvl2Crops] = useState([]);
+
+      // Level 3: AI Training Elements
+      const aiDataset = [
+        { name: "Daun Sirih", category: "Obat", desc: "Sangat baik untuk penyembuhan luar & antiseptik alami." },
+        { name: "Daun Jelatang", category: "Beracun", desc: "Menimbulkan gatal-gatal parah jika tersentuh kulit." },
+        { name: "Kecapi", category: "Alat Musik", desc: "Alat musik petik Sunda yang menghasilkan nada indah." },
+        { name: "Suling Bambu", category: "Alat Musik", desc: "Ditiup untuk mengiringi tembang Sunda yang syahdu." },
+        { name: "Daun Kumis Kucing", category: "Obat", desc: "Tanaman herbal untuk melancarkan saluran kemih." }
+      ];
+      const [lvl3Index, setLvl3Index] = useState(0);
+      const [lvl3CorrectCount, setLvl3CorrectCount] = useState(0);
+
+      // Level 4: Big Data Streaming Objects
+      const dataPool = [
+        { type: "Transportasi", text: "Data Rute Trans Metro Bandung", isGood: true },
+        { type: "Layanan Publik", text: "Sensor Air Bersih PDAM", isGood: true },
+        { type: "Iklan Spam", text: "Iklan Judi Online Ilegal", isGood: false },
+        { type: "Hoaks", text: "Berita Palsu: Danau Bandung Kering Besok", isGood: false }
+      ];
+      const [currentStreamItem, setCurrentStreamItem] = useState(null);
+      const [lvl4Score, setLvl4Score] = useState(0);
+
+      // Level 5: Final Boss Parameters
+      const [bossHealth, setBossHealth] = useState(100);
+      const [bossStage, setBossStage] = useState(1);
+      const [timeLeft, setTimeLeft] = useState(20);
+      const [bossMistakes, setBossMistakes] = useState(0); // Track mistakes (Max 3)
+
+      useEffect(() => {
+        const savedProfile = safeStorage.getItem("jagat_data_player_profile");
+        if (savedProfile) {
+          try {
+            const parsed = JSON.parse(savedProfile);
+            setPlayerName(parsed.name);
+            setPlayerClass(parsed.class);
+            const findChar = JAWARA_CHARACTERS.find(c => c.name === parsed.avatarName);
+            setSelectedChar(findChar || JAWARA_CHARACTERS[0]);
+            setScreen('map');
+          } catch(e) {}
+        }
+
+        const savedScore = safeStorage.getItem("jagat_data_score");
+        if (savedScore) setScore(parseInt(savedScore));
+
+        const savedLevels = safeStorage.getItem("jagat_data_unlocked_levels");
+        if (savedLevels) {
+          try {
+            setUnlockedLevels(JSON.parse(savedLevels));
+          } catch(e) {}
+        }
+
+        const savedUrl = safeStorage.getItem("jagat_data_script_url");
+        if (savedUrl) setScriptUrl(savedUrl);
+
+        sounds.setMute(isMuted);
+      }, []);
+
+      useEffect(() => {
+        sounds.setMute(isMuted);
+        
+        if (isMuted) {
+          sounds.stopAllBGM();
+          return;
+        }
+
+        // Handle seruling music for story levels, transitioning out when choosing character
+        if (screen === 'story-1' || screen === 'story-2') {
+          sounds.playSeruling();
+        } else if (screen === 'play') {
+          sounds.stopSeruling();
+          if (learningPhase) {
+            // Pause background music during explanation/study phase
+            sounds.stopAllBGM();
+          } else {
+            if (alertOpen) {
+              // Pause BGM when popups appear
+              sounds.stopAllBGM();
+            } else {
+              // Play appropriate BGM when studying / playing
+              if (activeLevel >= 1 && activeLevel <= 4) {
+                sounds.playBGM1_4();
+              } else if (activeLevel === 5) {
+                sounds.playBGM5();
+              }
+            }
+          }
+        } else if (screen === 'ending') {
+          sounds.stopSeruling();
+          if (alertOpen) {
+            sounds.stopAllBGM();
+          } else {
+            sounds.playVictory();
+          }
+        } else {
+          // Explicitly turn off seruling on character register screen or other screens
+          sounds.stopSeruling();
+          sounds.stopAllBGM();
+        }
+      }, [screen, activeLevel, learningPhase, alertOpen, isMuted]);
+
+      useEffect(() => {
+        let timer;
+        if (screen === 'play' && activeLevel === 5 && !learningPhase) {
+          timer = setInterval(() => {
+            setTimeLeft(prev => {
+              if (prev <= 1) {
+                clearInterval(timer);
+                triggerBossGameOver();
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }
+        return () => clearInterval(timer);
+      }, [screen, activeLevel, learningPhase, bossStage, bossMistakes]);
+
+      const handleAvatarError = (e, name) => {
+        e.target.onerror = null;
+        e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "JD")}&backgroundColor=161F30&textColor=D4AF37`;
+      };
+
+      const fireAlert = (title, desc, icon = "✨", callback = null) => {
+        setAlertTitle(title);
+        setAlertDesc(desc);
+        setAlertIcon(icon);
+        setAlertCallback(() => callback);
+        setAlertOpen(true);
+      };
+
+      const closeAlert = () => {
+        setAlertOpen(false);
+        if (alertCallback) alertCallback();
+      };
+
+      const toggleMute = () => {
+        const nextMute = !isMuted;
+        setIsMuted(nextMute);
+        sounds.setMute(nextMute);
+      };
+
+      const handleRegister = () => {
+        sounds.playClick();
+        if (!playerName.trim()) {
+          fireAlert("Registrasi Gagal", "Silakan masukkan nama Jawara kamu terlebih dahulu!", "⚠️");
+          return;
+        }
+        if (!playerClass.trim()) {
+          fireAlert("Registrasi Gagal", "Silakan tentukan kelas kamu!", "⚠️");
+          return;
+        }
+        if (!selectedChar) {
+          fireAlert("Registrasi Gagal", "Silakan pilih salah satu Karakter Jawara!", "⚠️");
+          return;
+        }
+
+        const profileObj = {
+          name: playerName,
+          class: playerClass,
+          avatarName: selectedChar.name,
+          avatarUrl: `https://lh3.googleusercontent.com/d/${selectedChar.driveId}=s0`
+        };
+
+        safeStorage.setItem("jagat_data_player_profile", JSON.stringify(profileObj));
+        setScreen('map');
+      };
+
+      const enterLevel = (lvlId) => {
+        sounds.playClick();
+        if (!unlockedLevels.includes(lvlId)) return;
+        setActiveLevel(lvlId);
+        setLearningPhase(true);
+        setScreen('play');
+
+        if (lvlId === 1) {
+          setLvl1Sequence([]);
+          setShuffledLvl1([...correctSequence].sort(() => Math.random() - 0.5));
+        } else if (lvlId === 2) {
+          setLvl2Crops([
+            { id: 1, crop: "Padi", amount: 150, status: "Valid" },
+            { id: 2, crop: "Padi", amount: 150, status: "Duplikat" },
+            { id: 3, crop: "Singkong", amount: 120, status: "Valid" },
+            { id: 4, crop: "Talas", amount: 0, status: "Eror/Kosong" },
+            { id: 5, crop: "Jagung", amount: 90, status: "Valid" },
+            { id: 6, crop: "Jagung", amount: 90, status: "Duplikat" }
+          ]);
+        } else if (lvlId === 3) {
+          setLvl3Index(0);
+          setLvl3CorrectCount(0);
+        } else if (lvlId === 4) {
+          setLvl4Score(0);
+          setCurrentStreamItem(dataPool[Math.floor(Math.random() * dataPool.length)]);
+        } else if (lvlId === 5) {
+          setBossHealth(100);
+          setBossStage(1);
+          setTimeLeft(20);
+          setBossMistakes(0);
+        }
+      };
+
+      const gainPangaweruh = (amount, nextLvl) => {
+        const newScore = score + amount;
+        setScore(newScore);
+        safeStorage.setItem("jagat_data_score", newScore);
+
+        if (nextLvl && !unlockedLevels.includes(nextLvl)) {
+          const nextLevelsList = [...unlockedLevels, nextLvl];
+          setUnlockedLevels(nextLevelsList);
+          safeStorage.setItem("jagat_data_unlocked_levels", JSON.stringify(nextLevelsList));
+        }
+        setScreen('map');
+      };
+
+      const addToSequence = (item) => {
+        sounds.playClick();
+        if (lvl1Sequence.includes(item)) return;
+        setLvl1Sequence([...lvl1Sequence, item]);
+      };
+
+      const resetLvl1 = () => {
+        sounds.playClick();
+        setLvl1Sequence([]);
+      };
+
+      const checkLvl1 = () => {
+        if (lvl1Sequence.length !== correctSequence.length) {
+          fireAlert("Algoritma Belum Lengkap", "Kamu harus memilih semua langkah sebelum menjalankan program!", "⚠️");
+          return;
+        }
+
+        let isCorrect = true;
+        for (let i = 0; i < correctSequence.length; i++) {
+          if (lvl1Sequence[i] !== correctSequence[i]) {
+            isCorrect = false;
+            break;
+          }
+        }
+
+        if (isCorrect) {
+          sounds.playCorrect();
+          fireAlert(
+            "SUCCESS! (Silih Asah)", 
+            "Selamat! Algoritma kamu benar. Ibu-ibu desa berhasil menyajikan nasi liwet yang nikmat tanpa gosong. Batu Kecerdasan Pertama berhasil kamu pulihkan!", 
+            "🌾",
+            () => gainPangaweruh(100, 2)
+          );
+        } else {
+          sounds.playTryAgain();
+          fireAlert("EROR: Logika Salah", "Aduh! Nasi liwetnya gosong karena urutannya terbalik! Coba pikirkan kembali, bisakah menyalakan api sebelum air dimasukkan? Yuk reset dan coba lagi.", "❌");
+          setLvl1Sequence([]);
+        }
+      };
+
+      const deleteCropRow = (id) => {
+        sounds.playClick();
+        setLvl2Crops(lvl2Crops.filter(row => row.id !== id));
+      };
+
+      const checkLvl2 = () => {
+        const leftovers = lvl2Crops.filter(row => row.status === "Duplikat" || row.status === "Eror/Kosong");
+        const valids = lvl2Crops.filter(row => row.status === "Valid");
+
+        if (leftovers.length === 0 && valids.length === 3) {
+          sounds.playCorrect();
+          fireAlert(
+            "BERHASIL! (Silih Asih)", 
+            "Hebat! Data pangan di Lumbung (Leuit) Tatar Sunda sekarang bersih dan akurat. Masyarakat tahu persis kapan harus mulai menanam berdasarkan visualisasi data. Batu Kecerdasan Kedua didapatkan!", 
+            "🌾",
+            () => gainPangaweruh(150, 3)
+          );
+        } else {
+          sounds.playTryAgain();
+          fireAlert("DATA MASIH KOTOR", "Oh tidak! Masih ada data palsu, kosong, atau duplikat yang tersisa, atau kamu salah menghapus data valid. Yuk ulangi saringan data!", "❌");
+          setLvl2Crops([
+            { id: 1, crop: "Padi", amount: 150, status: "Valid" },
+            { id: 2, crop: "Padi", amount: 150, status: "Duplikat" },
+            { id: 3, crop: "Singkong", amount: 120, status: "Valid" },
+            { id: 4, crop: "Talas", amount: 0, status: "Eror/Kosong" },
+            { id: 5, crop: "Jagung", amount: 90, status: "Valid" },
+            { id: 6, crop: "Jagung", amount: 90, status: "Duplikat" }
+          ]);
+        }
+      };
+
+      const classifyItem = (category) => {
+        sounds.playClick();
+        const currentObj = aiDataset[lvl3Index];
+        let newCorrect = lvl3CorrectCount;
+        if (category === currentObj.category) {
+          newCorrect += 1;
+        }
+
+        const nextIndex = lvl3Index + 1;
+        if (nextIndex >= aiDataset.length) {
+          const accuracy = Math.round((newCorrect / aiDataset.length) * 100);
+          if (accuracy >= 80) {
+            sounds.playCorrect();
+            fireAlert(
+              "AKURASI OPTIMAL! (Silih Asuh)", 
+              `Keren! Bot Batara Data kini memiliki kecerdasan klasifikasi sebesar ${accuracy}%. Ia kembali menjaga Curug AI dan memberikan Batu Kecerdasan Ketiga kepada kamu!`, 
+              "🤖",
+              () => gainPangaweruh(200, 4)
+            );
+          } else {
+            sounds.playTryAgain();
+            fireAlert("AKURASI RENDAH", `Akurasi klasifikasi hanya ${accuracy}%. AI masih bisa keliru membedakan tanaman obat dan racun. Latih kembali Bot Batara Data!`, "❌");
+            setLvl3Index(0);
+            setLvl3CorrectCount(0);
+          }
+        } else {
+          setLvl3CorrectCount(newCorrect);
+          setLvl3Index(nextIndex);
+        }
+      };
+
+      const filterStream = (isGoodAction) => {
+        sounds.playClick();
+        const isCorrect = isGoodAction === currentStreamItem.isGood;
+        let nextScore = lvl4Score;
+
+        if (isCorrect) {
+          nextScore += 1;
+        } else {
+          nextScore = Math.max(0, nextScore - 1);
+        }
+
+        if (nextScore >= 5) {
+          sounds.playCorrect();
+          fireAlert(
+            "DASBOR KOTA PULIH!", 
+            "Luar biasa, Jawara! Penyaringan Big Data dengan kecepatan kilat (Velocity) telah berhasil menyelamatkan pusat kendali Kota futuristik Tatar Sunda. Batu Kecerdasan Keempat di tanganmu!", 
+            "🏙️",
+            () => gainPangaweruh(250, 5)
+          );
+        } else {
+          setLvl4Score(nextScore);
+          setCurrentStreamItem(dataPool[Math.floor(Math.random() * dataPool.length)]);
+        }
+      };
+
+      const resetLevel5Challenge = () => {
+        setBossHealth(100);
+        setBossStage(1);
+        setTimeLeft(20);
+        setBossMistakes(0);
+      };
+
+      const handleAttackBoss = (isCorrect) => {
+        sounds.playClick();
+        if (isCorrect) {
+          const nextHealth = Math.max(0, bossHealth - 20);
+          setBossHealth(nextHealth);
+
+          if (bossStage === 5 && nextHealth <= 0) {
+            sounds.playVictory();
+            fireAlert(
+              "PENYELAMATAN BERHASIL! 👑",
+              "Selamat! Kamu telah mengalahkan Raksasa Kabut Informasi dan menyatukan kembali kelima batu kecerdasan di Tatar Parahyangan!",
+              "🎉",
+              () => {
+                setScore(prev => prev + 500);
+                setScreen('ending');
+                syncScore(score + 500);
+              }
+            );
+          } else {
+            setBossStage(prev => prev + 1);
+            setTimeLeft(20);
+          }
+        } else {
+          const nextMistakes = bossMistakes + 1;
+          setBossMistakes(nextMistakes);
+
+          if (nextMistakes >= 3) {
+            sounds.playTryAgain();
+            resetLevel5Challenge();
+            fireAlert(
+              "KESEMPATAN HABIS! 💥", 
+              "Aduh! Kamu telah salah menjawab sebanyak 3 kali. Raksasa Kabut Informasi menguasai jaringan! Silakan coba lagi tantangan Level 5 dari awal.", 
+              "👾"
+            );
+          } else {
+            sounds.playTryAgain();
+            fireAlert(
+              "JAWABAN SALAH! ❌", 
+              `Kurang tepat! Kesempatan tersisa: <b>${3 - nextMistakes}</b> kali lagi. Pikirkan matang-matang sebelum memilih!`, 
+              "👾"
+            );
+          }
+        }
+      };
+
+      const triggerBossGameOver = () => {
+        sounds.playTryAgain();
+        const nextMistakes = bossMistakes + 1;
+        setBossMistakes(nextMistakes);
+
+        if (nextMistakes >= 3) {
+          resetLevel5Challenge();
+          fireAlert(
+            "WAKTU HABIS & KESEMPATAN HABIS! 💥", 
+            "Aduh! Kamu kehabisan waktu/kesempatan sebanyak 3 kali. Raksasa Kabut Informasi menyerang balik! Silakan coba lagi tantangan Level 5 dari awal.", 
+            "👾"
+          );
+        } else {
+          setTimeLeft(20);
+          fireAlert(
+            "WAKTU HABIS! ⏳", 
+            `Waktu menjawab habis! Kesempatan tersisa: <b>${3 - nextMistakes}</b> kali lagi.`, 
+            "⏳"
+          );
+        }
+      };
+
+      const buyStoreItem = (name, cost) => {
+        sounds.playClick();
+        if (score >= cost) {
+          if (inventory.includes(name)) {
+            fireAlert("Gagal", "Kamu sudah memiliki item ini!", "❌");
+            return;
+          }
+          setScore(prev => prev - cost);
+          setInventory([...inventory, name]);
+          fireAlert("Berhasil", `Kamu telah membeli ${name}! Terima kasih telah melestarikan budaya Sunda.`, "🎉");
+        } else {
+          fireAlert("Gagal", "Poin Pangaweruh kamu belum mencukupi untuk membeli item ini.", "⚠️");
+        }
+      };
+
+      const syncScore = (finalScore) => {
+        if (!scriptUrl || !playerName) return;
+
+        const payload = {
+          name: playerName,
+          class: playerClass,
+          avatar: selectedChar?.name || "Jawara",
+          score: finalScore || score
+        };
+
+        fetch(scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }).catch(e => console.log("Database Sync Offline"));
+      };
+
+      const saveScriptSettings = () => {
+        sounds.playClick();
+        safeStorage.setItem("jagat_data_script_url", scriptUrl);
+        setShowIntegration(false);
+        fireAlert("Setelan Disimpan", "Tautan database Google Sheets berhasil diperbarui!", "⚙️");
+      };
+
+      const restartFullGame = () => {
+        sounds.playClick();
+        setScore(0);
+        setUnlockedLevels([1]);
+        setInventory([]);
+        setPlayerName('');
+        setPlayerClass('');
+        setSelectedChar(null);
+        safeStorage.removeItem("jagat_data_player_profile");
+        safeStorage.removeItem("jagat_data_unlocked_levels");
+        safeStorage.removeItem("jagat_data_score");
+        setScreen('splash');
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-200 overflow-x-hidden selection:bg-yellow-500 selection:text-slate-950">
+          
+          {/* HEADER / NAVIGATION BAR */}
+          <header className="bg-slate-900/90 backdrop-blur-md border-b border-yellow-500/20 p-4 sticky top-0 z-40">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden border border-yellow-500/30 flex items-center justify-center bg-slate-950 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                  <img src="https://lh3.googleusercontent.com/d/191Z02s6sUvzc2R3PJFDLm1hmD8rWkoOy=s0" alt="Logo Jagat Data" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h1 className="text-md md:text-lg font-black tracking-wider text-white">JAGAT DATA</h1>
+                  <p className="text-xs text-yellow-500 tracking-widest font-semibold uppercase">Jawara Tatar Sunda</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button 
+                  onClick={toggleMute} 
+                  className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1 ${!isMuted ? 'text-cyan-400 border-cyan-400/50 bg-cyan-950/20' : 'text-gray-400 border-slate-800 bg-slate-950'}`}
+                >
+                  {isMuted ? <IconVolumeX /> : <IconVolume2 />}
+                  <span>{isMuted ? 'Musik: OFF' : 'Musik: ON'}</span>
+                </button>
+
+                <button 
+                  onClick={() => { sounds.playClick(); setShowLeaderboard(true); }} 
+                  className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-yellow-500 hover:border-yellow-500/60 transition-all flex items-center gap-1"
+                >
+                  <IconTrophy />
+                  <span>Peringkat</span>
+                </button>
+
+                {playerName && (
+                  <div className="flex items-center space-x-3 bg-slate-950 px-3 py-1 rounded-xl border border-slate-800">
+                    <img 
+                      src={`https://lh3.googleusercontent.com/d/${selectedChar?.driveId}=s0`} 
+                      alt="Avatar" 
+                      className="w-8 h-8 rounded-full border border-yellow-500/50 object-cover" 
+                      onError={(e) => handleAvatarError(e, selectedChar?.name)} 
+                    />
+                    <div className="text-left">
+                      <div className="text-xs font-bold text-white leading-none">{playerName}</div>
+                      <div className="text-[9px] text-yellow-500">Kelas {playerClass}</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center space-x-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-yellow-500/20">
+                  <span className="text-yellow-500 text-xs font-bold">✨ PANGAWERUH:</span>
+                  <span className="text-cyan-400 font-extrabold text-sm md:text-base">{score}</span>
+                </div>
+
+                <button 
+                  onClick={() => { sounds.playClick(); setShowToko(true); }} 
+                  className="bg-gradient-to-r from-yellow-500/20 to-yellow-500 hover:from-yellow-500 text-yellow-500 hover:text-slate-950 px-4 py-1.5 rounded-lg transition-all duration-300 font-bold text-xs md:text-sm border border-yellow-500/50 flex items-center gap-1.5 shadow-[0_0_10px_rgba(212,175,55,0.15)]"
+                >
+                  <IconShoppingBag />
+                  <span>Toko Adat</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN GAME CONTAINER */}
+          <main className="flex-grow max-w-7xl w-full mx-auto p-4 flex flex-col justify-center">
+
+            {/* SCREEN 1: SPLASH SCREEN */}
+            {screen === 'splash' && (
+              <section className="relative min-h-[500px] w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-yellow-500/30 flex flex-col justify-center items-center p-6 md:p-12 shadow-2xl bg-slate-950">
+                <img src="https://lh3.googleusercontent.com/d/1dRYr3ivMps31rb8c2MtRPQuv0uU8pCWc=s0" alt="Latar Belakang Jagat Data" className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.25]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent z-10"></div>
+                
+                <div className="relative z-20 flex flex-col items-center justify-center space-y-6 max-w-2xl text-center bg-slate-900/90 backdrop-blur-md p-8 rounded-2xl border border-yellow-500/10 shadow-2xl">
+                  <div className="relative w-full max-w-md h-44 md:h-56 rounded-2xl overflow-hidden border-2 border-yellow-500/50 shadow-[0_0_20px_rgba(212,175,55,0.2)] bg-slate-950 transition-transform hover:scale-[1.02] duration-300">
+                    <img src="https://lh3.googleusercontent.com/d/1dRYr3ivMps31rb8c2MtRPQuv0uU8pCWc=s0" alt="Pusaka Jagat Data" className="w-full h-full object-cover" />
+                  </div>
+
+                  <div>
+                    <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-white to-cyan-400 tracking-tight">JAGAT DATA</h2>
+                    <h3 className="text-md md:text-lg font-bold text-emerald-400 mt-1 uppercase tracking-widest">Petualangan Jawara Tatar Sunda</h3>
+                    <p className="text-xs md:text-sm text-slate-300 mt-4 leading-relaxed">
+                      Siapkah kamu menyelamatkan peradaban nusantara kuno dari gempuran siber modern dengan ilmu pemrograman dan analisis data?
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4 w-full justify-center pt-2">
+                    <button 
+                      onClick={() => {
+                        setIsMuted(false);
+                        sounds.setMute(false);
+                        sounds.playClick();
+                        sounds.playSeruling();
+                        setScreen('story-1');
+                      }} 
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 text-sm font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                    >
+                      🎮 Mulai Petualangan
+                    </button>
+                    <button 
+                      onClick={() => { sounds.playClick(); setShowCredit(true); }} 
+                      className="px-6 py-3 bg-slate-800 text-white hover:bg-slate-700 text-sm font-bold rounded-xl transition-all duration-300 border border-slate-700"
+                    >
+                      📖 Nilai Budaya
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* SCREEN 2: STORY INTRODUCTION PART 1 */}
+            {screen === 'story-1' && (
+              <section className="relative min-h-[500px] w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-yellow-500/30 flex flex-col justify-center p-6 md:p-10 shadow-2xl bg-slate-950">
+                <img src="https://lh3.googleusercontent.com/d/1dRYr3ivMps31rb8c2MtRPQuv0uU8pCWc=s0" alt="Asal Mula Jagat Data" className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.15]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
+                
+                {/* Grid Layout containing Characters and Story Content */}
+                <div className="relative z-20 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                  {/* Left Column: Alur Cerita Character Image */}
+                  <div className="md:col-span-5 flex justify-center">
+                    <div className="relative w-full max-w-[280px] aspect-[4/5] md:aspect-[3/4] rounded-2xl overflow-hidden border-2 border-yellow-500/40 shadow-[0_0_25px_rgba(212,175,55,0.3)] bg-slate-900">
+                      <img 
+                        src="https://lh3.googleusercontent.com/d/1ISsbbinQHJgbP-T_-uRxgp4AsbvWtW8H=s0" 
+                        alt="Alur Cerita Jagat Data" 
+                        className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://placehold.co/400x500/1e293b/ffffff?text=Jagat+Data+Story";
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right Column: Narrative Content Box */}
+                  <div className="md:col-span-7 bg-slate-900/95 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-yellow-500/20 shadow-xl space-y-4">
+                    <span className="text-xs font-black text-yellow-500 uppercase tracking-widest block">KEMAKMURAN TATAR SUNDA</span>
+                    <h3 className="text-xl md:text-2xl font-black text-white">Pusaka Jagat Data</h3>
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                      Di Tatar Sunda kuno yang makmur dan damai, terdapat sebuah artefak suci bernama <b>Pusaka Jagat Data</b>. Artefak ini bertindak sebagai penyeimbang spiritual and penyimpan seluruh pengetahuan, adat, permainan tradisional, serta harmoni kehidupan ekosistem tatar parahyangan. Berkat pusaka ini, masyarakat hidup selaras dengan alam dan kecerdasan berpikir.
+                    </p>
+                    <div className="pt-2 flex justify-end">
+                      <button 
+                        onClick={() => { sounds.playClick(); setScreen('story-2'); }} 
+                        className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs md:text-sm font-extrabold rounded-xl transition-all duration-300 flex items-center gap-2 shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+                      >
+                        <span>Lanjut Cerita</span>
+                        <IconChevronRight />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* SCREEN 3: STORY INTRODUCTION PART 2 */}
+            {screen === 'story-2' && (
+              <section className="relative min-h-[500px] w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border border-red-500/30 flex flex-col justify-center p-6 md:p-10 shadow-2xl bg-slate-950">
+                <img src="https://lh3.googleusercontent.com/d/1j4p75z6MKLwl7dhLf1nbvmiKXHEJLDKg=s0" alt="Kehancuran Tatar Sunda" className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.15]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
+                
+                {/* Grid Layout containing Characters and Story Content */}
+                <div className="relative z-20 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                  {/* Left Column: Alur Cerita Character Image */}
+                  <div className="md:col-span-5 flex justify-center">
+                    <div className="relative w-full max-w-[280px] aspect-[4/5] md:aspect-[3/4] rounded-2xl overflow-hidden border-2 border-red-500/40 shadow-[0_0_25px_rgba(239,68,68,0.3)] bg-slate-900">
+                      <img 
+                        src="https://lh3.googleusercontent.com/d/1ISsbbinQHJgbP-T_-uRxgp4AsbvWtW8H=s0" 
+                        alt="Kehancuran Jagat Data" 
+                        className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://placehold.co/400x500/1e293b/ffffff?text=Jagat+Data+Story";
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right Column: Narrative Content Box */}
+                  <div className="md:col-span-7 bg-slate-900/95 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-red-500/20 shadow-xl space-y-4">
+                    <span className="text-xs font-bold text-red-400 uppercase tracking-widest block">ANCAMAN KABUT MAHADATA</span>
+                    <h3 className="text-xl md:text-2xl font-black text-white">Kacau & Hilang Arah</h3>
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                      Kedamaian itu sirna seketika saat muncul gangguan misterius bernama <b>Kabut Mahadata (Big Data Fog)</b>. Aliran informasi yang terlampau besar, tidak terstruktur, hoaks, dan spam menyerang sistem pertahanan Pusaka Jagat Data. Warga kehilangan arah, bertengkar karena disinformasi, dan lupa akan kearifan lokal leluhur. Kamu terpilih untuk mengumpulkan Empat Batu Kecerdasan dan memulihkannya!
+                    </p>
+                    <div className="pt-2 flex justify-between items-center">
+                      <button onClick={() => { sounds.playClick(); setScreen('story-1'); }} className="text-xs text-slate-400 hover:text-white underline font-semibold">← Kembali</button>
+                      <button 
+                        onClick={() => { sounds.playClick(); setScreen('register'); }} 
+                        className="px-6 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-amber-400 text-slate-950 text-xs md:text-sm font-extrabold rounded-xl transition-all duration-300 flex items-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                      >
+                        <span>Daftar Jawara Muda</span>
+                        <span>⚔️</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* SCREEN 4: REGISTRATION & CHARACTER SELECTION */}
+            {screen === 'register' && (
+              <section className="py-6 px-4 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-6 w-full animate-fadeIn">
+                <div className="w-full bg-slate-900 border border-yellow-500/25 rounded-2xl p-6 shadow-xl max-w-2xl">
+                  <h3 className="text-md font-black text-yellow-500 mb-4 uppercase tracking-wider text-center flex items-center justify-center gap-2">
+                    <span>⚔️</span>
+                    <span>Pendaftaran Jawara Muda</span>
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 mb-2">NAMA LENGKAP</label>
+                      <input 
+                        type="text" 
+                        value={playerName}
+                        onChange={(e) => setPlayerName(e.target.value)}
+                        placeholder="Masukkan nama kamu..." 
+                        className="w-full bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 mb-2">KELAS (SMP/SMA)</label>
+                      <input 
+                        type="text" 
+                        value={playerClass}
+                        onChange={(e) => setPlayerClass(e.target.value)}
+                        placeholder="Contoh: VII-A atau X-MIPA" 
+                        className="w-full bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-xs font-bold text-slate-400 mb-3 text-center uppercase tracking-wider">PILIH KARAKTER JAWARA KAMU (1-10)</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-[220px] overflow-y-auto p-2 border border-slate-800 rounded-xl bg-slate-950/50">
+                      {JAWARA_CHARACTERS.map(char => {
+                        const isSelected = selectedChar?.id === char.id;
+                        return (
+                          <div 
+                            key={char.id}
+                            onClick={() => { sounds.playClick(); setSelectedChar(char); }} 
+                            className={`bg-slate-900 border-2 rounded-xl p-2 text-center cursor-pointer transition-all ${isSelected ? 'border-yellow-500 bg-yellow-500/5 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'border-slate-800 hover:border-slate-700'}`}
+                          >
+                            <div className="relative w-12 h-12 mx-auto mb-1 rounded-lg overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center">
+                              <img 
+                                src={`https://lh3.googleusercontent.com/d/${char.driveId}=s0`} 
+                                alt={char.name} 
+                                className="w-full h-full object-cover" 
+                                onError={(e) => handleAvatarError(e, char.name)}
+                              />
+                            </div>
+                            <h4 className="text-[11px] font-bold text-white truncate">{char.name}</h4>
+                            <p className="text-[8px] text-slate-500 truncate">{char.desc}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <button 
+                      onClick={handleRegister} 
+                      className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 text-sm font-extrabold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.3)] uppercase tracking-wider"
+                    >
+                      Masuk ke Peta Dunia 🗺️
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* SCREEN 5: WORLD MAP */}
+            {screen === 'map' && (
+              <section className="w-full max-w-4xl mx-auto space-y-6 animate-fadeIn">
+                <div className="text-center">
+                  <h2 className="text-2xl font-black text-white tracking-wide">PETA LEMBAH TATAR SUNDA</h2>
+                  <p className="text-sm text-slate-400 mt-1">Pilih wilayah misi untuk memulihkan Batu Kecerdasan</p>
+                </div>
+
+                <div className="relative w-full border border-yellow-500/20 rounded-2xl p-6 overflow-hidden min-h-[450px] flex flex-col justify-between bg-slate-900 shadow-2xl">
+                  <img src="https://lh3.googleusercontent.com/d/1EmNMu9toB1_m_lslOAGb86hS0A7lHPHx=s0" alt="Lembah Tatar Sunda" className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.25] contrast-[1.05]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/10 z-10"></div>
+                  
+                  <div className="relative flex-grow flex flex-col md:flex-row items-center justify-around gap-8 md:gap-4 py-8 z-20">
+                    {/* Node 1 */}
+                    <button 
+                      onClick={() => enterLevel(1)} 
+                      className="flex flex-col items-center transition-transform hover:scale-110 focus:outline-none"
+                    >
+                      <div className="w-16 h-16 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-black text-xl ring-4 ring-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]">1</div>
+                      <span className="mt-2 text-xs font-black text-cyan-400 tracking-wider bg-slate-950/95 px-2 py-1 rounded border border-cyan-400/30">KAMPUNG ALGORITMA</span>
+                      <span className="text-[10px] text-slate-300 font-bold">Koding Dasar</span>
+                    </button>
+
+                    <div className={`hidden md:block flex-grow h-0.5 ${unlockedLevels.includes(2) ? 'bg-cyan-500' : 'bg-slate-800'}`}></div>
+
+                    {/* Node 2 */}
+                    <button 
+                      onClick={() => enterLevel(2)} 
+                      disabled={!unlockedLevels.includes(2)}
+                      className={`flex flex-col items-center transition-transform hover:scale-110 focus:outline-none ${unlockedLevels.includes(2) ? '' : 'opacity-40 cursor-not-allowed'}`}
+                    >
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-xl ring-4 ring-slate-950 ${unlockedLevels.includes(2) ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-slate-800 text-slate-400'}`}>2</div>
+                      <span className={`mt-2 text-xs font-black tracking-wider bg-slate-950/95 px-2 py-1 rounded border ${unlockedLevels.includes(2) ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-500 border-slate-800'}`}>LEUWEUNG DATA</span>
+                      <span className="text-[10px] text-slate-300 font-bold">Analisis Data</span>
+                    </button>
+
+                    <div className={`hidden md:block flex-grow h-0.5 ${unlockedLevels.includes(3) ? 'bg-cyan-500' : 'bg-slate-800'}`}></div>
+
+                    {/* Node 3 */}
+                    <button 
+                      onClick={() => enterLevel(3)} 
+                      disabled={!unlockedLevels.includes(3)}
+                      className={`flex flex-col items-center transition-transform hover:scale-110 focus:outline-none ${unlockedLevels.includes(3) ? '' : 'opacity-40 cursor-not-allowed'}`}
+                    >
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-xl ring-4 ring-slate-950 ${unlockedLevels.includes(3) ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-slate-800 text-slate-400'}`}>3</div>
+                      <span className={`mt-2 text-xs font-black tracking-wider bg-slate-950/95 px-2 py-1 rounded border ${unlockedLevels.includes(3) ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-500 border-slate-800'}`}>CURUG AI</span>
+                      <span className="text-[10px] text-slate-300 font-bold">Batara AI</span>
+                    </button>
+
+                    <div className={`hidden md:block flex-grow h-0.5 ${unlockedLevels.includes(4) ? 'bg-cyan-500' : 'bg-slate-800'}`}></div>
+
+                    {/* Node 4 */}
+                    <button 
+                      onClick={() => enterLevel(4)} 
+                      disabled={!unlockedLevels.includes(4)}
+                      className={`flex flex-col items-center transition-transform hover:scale-110 focus:outline-none ${unlockedLevels.includes(4) ? '' : 'opacity-40 cursor-not-allowed'}`}
+                    >
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-xl ring-4 ring-slate-950 ${unlockedLevels.includes(4) ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-slate-800 text-slate-400'}`}>4</div>
+                      <span className={`mt-2 text-xs font-black tracking-wider bg-slate-950/95 px-2 py-1 rounded border ${unlockedLevels.includes(4) ? 'text-cyan-400 border-cyan-400/30' : 'text-slate-500 border-slate-800'}`}>KOTA MAHADATA</span>
+                      <span className="text-[10px] text-slate-300 font-bold">Big Data 3V</span>
+                    </button>
+
+                    <div className={`hidden md:block flex-grow h-0.5 ${unlockedLevels.includes(5) ? 'bg-yellow-500' : 'bg-slate-800'}`}></div>
+
+                    {/* Node 5 */}
+                    <button 
+                      onClick={() => enterLevel(5)} 
+                      disabled={!unlockedLevels.includes(5)}
+                      className={`flex flex-col items-center transition-transform hover:scale-110 focus:outline-none ${unlockedLevels.includes(5) ? '' : 'opacity-40 cursor-not-allowed'}`}
+                    >
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-xl ring-4 ring-slate-950 ${unlockedLevels.includes(5) ? 'bg-yellow-500 text-slate-950 shadow-[0_0_15px_rgba(212,175,55,0.4)] animate-pulse' : 'bg-slate-800 text-slate-400'}`}>👑</div>
+                      <span className={`mt-2 text-xs font-black tracking-wider bg-slate-950/95 px-2 py-1 rounded border ${unlockedLevels.includes(5) ? 'text-yellow-500 border-yellow-500/30' : 'text-slate-500 border-slate-800'}`}>PUNCAK PUSAKA</span>
+                      <span className="text-[10px] text-slate-300 font-bold">Pertempuran Akhir</span>
+                    </button>
+                  </div>
+
+                  <div className="relative bg-slate-950/95 border border-yellow-500/25 p-4 rounded-xl flex items-center space-x-4 z-20 shadow-lg backdrop-blur-sm">
+                    <div className="w-12 h-12 bg-yellow-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">👴</div>
+                    <div>
+                      <h4 className="text-xs font-black text-yellow-500 uppercase tracking-wide">PANDUAN AKI PANYIMPEN DATA:</h4>
+                      <p className="text-xs text-slate-300 leading-relaxed">"Setiap wilayah menyimpan satu Batu Kecerdasan. Selesaikan misi secara berurutan, pelajari ilmunya dengan saksama, dan selamatkan Tatar Sunda!"</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* SCREEN 6: INTERACTIVE LEVEL PLAY AREA */}
+            {screen === 'play' && (
+              <section className="w-full max-w-4xl mx-auto space-y-6 animate-fadeIn">
+                <div className="bg-gradient-to-r from-slate-900 to-slate-950 border border-yellow-500/30 p-5 rounded-2xl relative shadow-2xl flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                  
+                  {/* Pemandu Jawara (Kang Kuri) - Replaced emoji with the direct Google Drive link */}
+                  <div className="w-20 h-20 rounded-2xl bg-yellow-500/20 border border-yellow-500 flex-shrink-0 relative overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                    <img 
+                      src="https://lh3.googleusercontent.com/d/1ISsbbinQHJgbP-T_-uRxgp4AsbvWtW8H=s0" 
+                      alt="Pemandu Jawara" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://placehold.co/150x150/1e293b/ffffff?text=Pemandu";
+                      }}
+                    />
+                    <div className="absolute bottom-0 inset-x-0 bg-yellow-500 text-[9px] text-slate-950 font-black text-center uppercase py-0.5 tracking-wider">PEMANDU</div>
+                  </div>
+
+                  <div className="flex-grow text-center sm:text-left space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black text-yellow-500 tracking-widest uppercase">Pemandu Jawara</span>
+                      <span className="text-[10px] bg-cyan-500/10 text-cyan-400 font-bold px-2 py-0.5 rounded border border-cyan-400/30">LEVEL {activeLevel}</span>
+                    </div>
+                    <h3 className="text-base font-extrabold text-white">{LEVEL_EXPLANATIONS[activeLevel].title}</h3>
+                    <p 
+                      className="text-sm text-slate-300 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: LEVEL_EXPLANATIONS[activeLevel].desc }}
+                    />
+                  </div>
+                </div>
+
+                {/* EDUCATIONAL STAGE */}
+                {learningPhase ? (
+                  <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+                    <div className="flex items-center space-x-3 border-b border-yellow-500/20 pb-4">
+                      <span className="text-4xl">📚</span>
+                      <div>
+                        <span className="text-[10px] text-cyan-400 font-black uppercase tracking-widest">Fase Belajar</span>
+                        <h4 className="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-white">{LEVEL_MATERI_DATA[activeLevel].materiTitle}</h4>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <p className="text-xs md:text-sm text-slate-300 leading-relaxed">{LEVEL_MATERI_DATA[activeLevel].materiConcept}</p>
+                      
+                      <div className="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        {LEVEL_MATERI_DATA[activeLevel].materiPoints.map((point, index) => (
+                          <div key={index} className="flex items-start space-x-2 text-xs md:text-sm text-slate-300">
+                            <span className="text-emerald-400 select-none font-bold">✦</span>
+                            <p className="leading-relaxed" dangerouslySetInnerHTML={{ __html: point }} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-lg border-l-4 border-yellow-500 text-[11px] md:text-xs text-slate-400">
+                      <b>Penerapan Praktis:</b> {LEVEL_MATERI_DATA[activeLevel].materiUsage}
+                    </div>
+
+                    <div className="flex justify-center pt-2">
+                      <button 
+                        onClick={() => { sounds.playClick(); setLearningPhase(false); }} 
+                        className="px-8 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs md:text-sm font-black rounded-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                      >
+                        Mulai Uji Tantangan Jawara ⚔️
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* ACTIVE CHALLENGE PLAYGROUND */
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl min-h-[350px] flex flex-col justify-center items-center">
+                    
+                    {/* LEVEL 1: SEQUENCE GAME */}
+                    {activeLevel === 1 && (
+                      <div className="w-full text-center space-y-6">
+                        <div className="bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs max-w-md mx-auto text-slate-400">
+                          <b>Tugas:</b> Klik setiap langkah secara berurutan sesuai dengan logika membuat Nasi Liwet Sunda tradisional!
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {shuffledLvl1.map((item, index) => {
+                            const isChosen = lvl1Sequence.includes(item);
+                            return (
+                              <button 
+                                key={index}
+                                disabled={isChosen}
+                                onClick={() => addToSequence(item)} 
+                                className={`text-xs md:text-sm font-semibold py-2 px-4 rounded-xl border transition-all duration-300 ${isChosen ? 'bg-slate-950 border-slate-900 text-slate-600 opacity-30' : 'bg-slate-950 hover:bg-slate-800 text-white border-slate-700'}`}
+                              >
+                                {item}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="border-2 border-dashed border-cyan-500/40 p-4 rounded-2xl min-h-[100px] bg-slate-950/50">
+                          <h4 className="text-xs text-cyan-400 font-extrabold uppercase mb-3 tracking-widest">URUTAN ALGORITMA ANDA:</h4>
+                          <div className="flex flex-wrap gap-2 justify-center">
+                            {lvl1Sequence.length === 0 ? (
+                              <span className="text-xs text-slate-500 italic">Belum ada langkah yang dipilih...</span>
+                            ) : (
+                              lvl1Sequence.map((item, index) => (
+                                <span key={index} className="bg-cyan-500/10 text-cyan-400 border border-cyan-400/30 text-xs py-1 px-3 rounded-lg flex items-center gap-1">
+                                  {index + 1}. {item}
+                                </span>
+                              ))
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex justify-center gap-3">
+                          <button onClick={resetLvl1} className="px-5 py-2 bg-slate-800 text-slate-400 hover:text-white font-bold rounded-lg text-xs transition-all">Reset</button>
+                          <button onClick={checkLvl1} className="px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]">Jalankan Kode ▶️</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* LEVEL 2: DATA CLEANING */}
+                    {activeLevel === 2 && (
+                      <div className="w-full text-center space-y-6">
+                        <div className="bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs max-w-md mx-auto text-slate-400">
+                          <b>Tugas:</b> Bersihkan data kotor di bawah ini! Klik tombol 🗑️ pada baris data yang bernilai <b>Duplikat</b> atau <b>Eror/Kosong</b>.
+                        </div>
+
+                        <div className="overflow-x-auto w-full max-w-lg mx-auto bg-slate-950 border border-slate-800 rounded-xl">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="bg-slate-880/85 border-b border-slate-800 text-[10px] md:text-xs text-yellow-500 uppercase tracking-wider">
+                                <th className="p-3">ID</th>
+                                <th className="p-3">Nama Komoditas</th>
+                                <th className="p-3">Jumlah Panen (Kw)</th>
+                                <th className="p-3">Kondisi Data</th>
+                                <th className="p-3 text-center">Tindakan</th>
+                              </tr>
+                            </thead>
+                            <tbody className="text-xs text-slate-300">
+                              {lvl2Crops.map((row) => (
+                                <tr key={row.id} className="border-b border-slate-800/50 hover:bg-slate-900/40 transition-colors">
+                                  <td className="p-3 font-semibold text-slate-500">{row.id}</td>
+                                  <td className="p-3 font-medium">{row.crop}</td>
+                                  <td className="p-3">{row.amount === 0 ? <span className="text-red-500 font-bold">NaN (Null)</span> : row.amount}</td>
+                                  <td className="p-3">
+                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${row.status === 'Valid' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                                      {row.status}
+                                    </span>
+                                  </td>
+                                  <td className="p-3 text-center">
+                                    <button onClick={() => deleteCropRow(row.id)} className="text-red-400 hover:text-red-600 transition-colors text-base font-bold">🗑️</button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div className="flex justify-center gap-3">
+                          <button 
+                            onClick={() => {
+                              sounds.playClick();
+                              setLvl2Crops([
+                                { id: 1, crop: "Padi", amount: 150, status: "Valid" },
+                                { id: 2, crop: "Padi", amount: 150, status: "Duplikat" },
+                                { id: 3, crop: "Singkong", amount: 120, status: "Valid" },
+                                { id: 4, crop: "Talas", amount: 0, status: "Eror/Kosong" },
+                                { id: 5, crop: "Jagung", amount: 90, status: "Valid" },
+                                { id: 6, crop: "Jagung", amount: 90, status: "Duplikat" }
+                              ]);
+                            }} 
+                            className="px-5 py-2 bg-slate-800 text-slate-400 hover:text-white font-bold rounded-lg text-xs transition-all"
+                          >
+                            Reset
+                          </button>
+                          <button onClick={checkLvl2} className="px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black rounded-lg text-xs transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]">Selesai & Kirim</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* LEVEL 3: AI CLASSIFICATION */}
+                    {activeLevel === 3 && (
+                      <div className="w-full text-center space-y-6">
+                        <div className="bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs max-w-md mx-auto text-slate-400">
+                          <b>Tugas:</b> Klasifikasikan objek berikut untuk mengajari kecerdasan artifisial (AI) Batara Data!
+                        </div>
+
+                        <div className="max-w-sm mx-auto bg-slate-950 border-2 border-emerald-500/30 p-5 rounded-2xl shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                          <span className="text-4xl">📦</span>
+                          <h4 className="text-lg font-black text-white mt-2">{aiDataset[lvl3Index].name}</h4>
+                          <p className="text-xs text-slate-400 mt-1">{aiDataset[lvl3Index].desc}</p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row justify-center gap-3">
+                          <button onClick={() => classifyItem('Obat')} className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition-all">🌱 Tanaman Obat</button>
+                          <button onClick={() => classifyItem('Beracun')} className="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition-all">☠️ Tanaman Beracun</button>
+                          <button onClick={() => classifyItem('Alat Musik')} className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs transition-all">🎵 Alat Musik Sunda</button>
+                        </div>
+
+                        <div className="text-xs text-slate-500 font-bold">Progress Latih: {lvl3Index + 1} / {aiDataset.length}</div>
+                      </div>
+                    )}
+
+                    {/* LEVEL 4: BIG DATA STREAM FILTER */}
+                    {activeLevel === 4 && currentStreamItem && (
+                      <div className="w-full text-center space-y-6">
+                        <div className="bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs max-w-md mx-auto text-slate-400">
+                          <b>Tugas:</b> Kota tenggelam dalam aliran Mahadata berkecepatan tinggi! <b>Saring Jagat:</b> Loloskan data yang valid & Blokir data hoaks/spam!
+                        </div>
+
+                        <div className="h-40 bg-slate-950 border border-slate-800 rounded-xl flex flex-col items-center justify-center p-4 overflow-hidden relative">
+                          <div className="text-center space-y-2">
+                            <span className="text-[10px] bg-slate-800 text-yellow-500 px-2 py-1 rounded border border-yellow-500/20 font-bold uppercase tracking-wider">{currentStreamItem.type}</span>
+                            <p className="text-sm md:text-base text-white mt-2 font-semibold">{currentStreamItem.text}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-center gap-4">
+                          <button onClick={() => filterStream(false)} className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-lg text-xs transition-all shadow-[0_0_10px_rgba(220,38,38,0.2)]">❌ BLOKIR (Spam/Hoaks)</button>
+                          <button onClick={() => filterStream(true)} className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-lg text-xs transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)]">✅ LOLOSKAN (Fakta/Layanan)</button>
+                        </div>
+
+                        <div className="flex justify-between max-w-xs mx-auto text-xs font-bold text-slate-400">
+                          <span>Poin Saringan: <span className="text-yellow-500">{lvl4Score}</span> / 5</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* LEVEL 5: FINAL BOSS (5-OPTION MULTIPLE CHOICE WITH 3 LIVES) */}
+                    {activeLevel === 5 && (
+                      <div className="w-full text-center space-y-6">
+                        <div className="bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs max-w-md mx-auto text-slate-400">
+                          <b>Tahap Akhir (5 Pertanyaan):</b> Pecahkan pertahanan Raksasa Kabut Informasi menggunakan seluruh materi data yang telah kamu pelajari!
+                        </div>
+
+                        {/* Mistakes/Hearts Bar */}
+                        <div className="max-w-md mx-auto flex items-center justify-between bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl">
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Kesempatan Jawara:</span>
+                          <div className="flex space-x-1.5">
+                            {[1, 2, 3].map(heartId => {
+                              const isLost = heartId > (3 - bossMistakes);
+                              return (
+                                <span 
+                                  key={heartId} 
+                                  className={`text-lg md:text-xl transition-all duration-300 ${isLost ? 'opacity-20 grayscale scale-90' : 'animate-pulse'}`}
+                                >
+                                  💖
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Boss Health Bar */}
+                        <div className="max-w-md mx-auto space-y-2">
+                          <div className="flex justify-between items-center text-xs font-bold text-slate-400">
+                            <span>👾 RAKSASA KABUT INFORMASI</span>
+                            <span className="text-red-400 font-extrabold">{bossHealth}% HP</span>
+                          </div>
+                          <div className="w-full h-4 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                            <div className="h-full bg-gradient-to-r from-red-600 to-rose-400 transition-all duration-500" style={{ width: `${bossHealth}%` }} />
+                          </div>
+                        </div>
+
+                        {/* Timer Bar */}
+                        <div className="max-w-md mx-auto space-y-2">
+                          <div className="flex justify-between items-center text-xs font-bold text-slate-400">
+                            <span className="text-cyan-400">⏳ SISA WAKTU MENJAWAB:</span>
+                            <span className={`font-extrabold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-emerald-400'}`}>{timeLeft} Detik</span>
+                          </div>
+                          <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                            <div className={`h-full transition-all duration-100 ${timeLeft <= 5 ? 'bg-red-500' : 'bg-cyan-400'}`} style={{ width: `${(timeLeft / 20) * 100}%` }} />
+                          </div>
+                        </div>
+
+                        {/* Boss Stage Quiz Rendering Engine */}
+                        <div className="bg-slate-950 border border-yellow-500/20 p-5 rounded-2xl max-w-xl mx-auto text-left space-y-4">
+                          {(() => {
+                            const currentQuiz = BOSS_QUIZ_DATA[bossStage - 1];
+                            if (!currentQuiz) return null;
+                            return (
+                              <div className="space-y-4">
+                                <span className="text-xs text-yellow-500 font-extrabold tracking-widest uppercase block border-b border-slate-800 pb-2">
+                                  {currentQuiz.phase}
+                                </span>
+                                <h4 className="text-sm md:text-base font-bold text-white leading-relaxed">
+                                  {currentQuiz.question}
+                                </h4>
+                                <div className="grid grid-cols-1 gap-3 pt-2">
+                                  {currentQuiz.options.map((opt, i) => (
+                                    <button 
+                                      key={i}
+                                      onClick={() => handleAttackBoss(opt.isCorrect)}
+                                      className="p-3 bg-slate-900 hover:bg-slate-850 text-xs text-left text-slate-200 rounded-xl border border-slate-800 hover:border-yellow-500/50 transition-all active:scale-[0.98] duration-200"
+                                    >
+                                      {opt.text}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        <div className="text-xs text-slate-500 font-bold">Misi Tahap: {bossStage} / 5</div>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+
+              </section>
+            )}
+
+            {/* SCREEN 7: FINAL SUCCESS / CELEBRATION */}
+            {screen === 'ending' && (
+              <section className="relative min-h-[550px] w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-yellow-500 flex flex-col justify-between p-6 md:p-12 shadow-2xl bg-slate-950 animate-fadeIn">
+                <img src="https://lh3.googleusercontent.com/d/1dRYr3ivMps31rb8c2MtRPQuv0uU8pCWc=s0" alt="Tatar Sunda Kembali Damai" className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-[0.25] contrast-[1.1]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
+
+                <div className="relative z-20 w-full text-center space-y-6">
+                  <div className="bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl border border-yellow-500/20 max-w-2xl mx-auto shadow-xl">
+                    <span className="text-xs font-black text-emerald-400 tracking-widest uppercase">🎉 PETUALANGAN SELESAI 🎉</span>
+                    <h2 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-white to-cyan-400 tracking-wide mt-2">TATAR SUNDA KEMBALI MAKMUR</h2>
+                    <p className="text-xs md:text-sm text-slate-300 mt-4 leading-relaxed">
+                      Kabut Mahadata yang menyesatkan telah berhasil disirnakan! Berkat kearifan dan kecerdasan data kamu, <b>Pusaka Jagat Data</b> kini kembali memancarkan harmoni. Di bawah lembah yang hijau, anak-anak Tatar Sunda kembali berkumpul riang gembira memainkan Egrang, Galah Asin, dan Congklak. Alunan suara Angklung Bambu yang merdu kembali terdengar selaras menemani tawa riang mereka.
+                    </p>
+                  </div>
+
+                  <div className="max-w-3xl mx-auto">
+                    <h3 className="text-xs font-black text-yellow-500 tracking-widest uppercase mb-4">🏆 5 PUSAKA & BATU KECERDASAN YANG DIPULIHKAN:</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                      <div className="bg-slate-900/90 border border-cyan-500/50 rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.1)] text-center">
+                        <span className="text-2xl">🟢</span>
+                        <h4 className="text-[10px] font-black text-cyan-400 mt-1.5 uppercase leading-tight">Batu Logika</h4>
+                        <p className="text-[8px] text-slate-500 mt-0.5">Kampung Algoritma</p>
+                      </div>
+                      <div className="bg-slate-900/90 border border-emerald-500/50 rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.1)] text-center">
+                        <span className="text-2xl">🔵</span>
+                        <h4 className="text-[10px] font-black text-emerald-400 mt-1.5 uppercase leading-tight">Batu Kemurnian</h4>
+                        <p className="text-[8px] text-slate-500 mt-0.5">Leuweung Data</p>
+                      </div>
+                      <div className="bg-slate-900/90 border border-purple-500/50 rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(168,85,247,0.1)] text-center">
+                        <span className="text-2xl">🟣</span>
+                        <h4 className="text-[10px] font-black text-purple-400 mt-1.5 uppercase leading-tight">Batu Batara AI</h4>
+                        <p className="text-[8px] text-slate-500 mt-0.5">Curug AI</p>
+                      </div>
+                      <div className="bg-slate-900/90 border border-yellow-500/50 rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(234,179,8,0.1)] text-center">
+                        <span className="text-2xl">🟡</span>
+                        <h4 className="text-[10px] font-black text-yellow-400 mt-1.5 uppercase leading-tight">Batu Saringan</h4>
+                        <p className="text-[8px] text-slate-500 mt-0.5">Kota Mahadata</p>
+                      </div>
+                      <div className="bg-slate-900/90 border border-yellow-500 rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.2)] text-center">
+                        <span className="text-2xl">👑</span>
+                        <h4 className="text-[10px] font-black text-yellow-500 mt-1.5 uppercase leading-tight">Jagat Data</h4>
+                        <p className="text-[8px] text-slate-500 mt-0.5">Puncak Pusaka</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button 
+                      onClick={restartFullGame} 
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-amber-400 text-slate-950 text-xs md:text-sm font-black rounded-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.2)] uppercase tracking-wider"
+                    >
+                      Mainkan Lagi Dari Awal 🔄
+                    </button>
+                    <button 
+                      onClick={() => { sounds.playClick(); setShowLeaderboard(true); }} 
+                      className="px-6 py-3 bg-slate-800 text-white hover:bg-slate-700 text-xs md:text-sm font-black rounded-xl transition-all duration-300 border border-slate-700 uppercase tracking-wider"
+                    >
+                      🏆 Papan Peringkat
+                    </button>
+                    <button 
+                      onClick={() => { sounds.playClick(); setShowDaftarPustaka(true); }} 
+                      className="px-6 py-3 bg-slate-900 border border-cyan-500/30 text-cyan-400 hover:text-white text-xs md:text-sm font-black rounded-xl transition-all duration-300 uppercase tracking-wider shadow-[0_0_10px_rgba(6,182,212,0.15)]"
+                    >
+                      📚 Daftar Pustaka
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+          </main>
+
+          {/* ==========================================
+              MODALS & OVERLAYS
+          ========================================== */}
+
+          {/* TOKO ADAT MODAL */}
+          {showToko && (
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-900 border-2 border-yellow-500 rounded-2xl max-w-2xl w-full p-6 relative shadow-2xl animate-fadeIn">
+                <button onClick={() => setShowToko(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-black text-yellow-500 tracking-wide flex items-center justify-center gap-2">
+                    <span>🛍️</span>
+                    <span>TOKO ADAT DIGITAL</span>
+                  </h3>
+                  <p className="text-sm text-slate-400 mt-1">Gunakan poin <b>Pangaweruh</b> untuk melestarikan kebudayaan Sunda</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                    <div>
+                      <h4 className="font-bold text-white text-sm">🥋 Kostum Jawara Neon</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Pangsi modern bermotif sirkuit biru</p>
+                      <span className="text-xs text-yellow-500 font-bold block mt-1">Harga: 100 Poin</span>
+                    </div>
+                    <button onClick={() => buyStoreItem('Kostum Jawara Neon', 100)} className="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500 text-yellow-500 hover:text-slate-950 font-bold text-xs rounded transition-all duration-300 border border-yellow-500/30">Beli</button>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                    <div>
+                      <h4 className="font-bold text-white text-sm">🎨 Tema Batik Megamendung</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Mengubah estetik latar belakang visual</p>
+                      <span className="text-xs text-yellow-500 font-bold block mt-1">Harga: 200 Poin</span>
+                    </div>
+                    <button onClick={() => buyStoreItem('Tema Batik Megamendung', 200)} className="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500 text-yellow-500 hover:text-slate-950 font-bold text-xs rounded transition-all duration-300 border border-yellow-500/30">Beli</button>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                    <div>
+                      <h4 className="font-bold text-white text-sm">🎵 Waditra Angklung Digital</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Akses instrumen bambu interaktif di lobi</p>
+                      <span className="text-xs text-yellow-500 font-bold block mt-1">Harga: 300 Poin</span>
+                    </div>
+                    <button onClick={() => buyStoreItem('Waditra Angklung Digital', 300)} className="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500 text-yellow-500 hover:text-slate-950 font-bold text-xs rounded transition-all duration-300 border border-yellow-500/30">Beli</button>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                    <div>
+                      <h4 className="font-bold text-white text-sm">🎖️ Badge Mahadata Master</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Gelar kelulusan utama Tatar Sunda</p>
+                      <span className="text-xs text-yellow-500 font-bold block mt-1">Harga: 400 Poin</span>
+                    </div>
+                    <button onClick={() => buyStoreItem('Badge Mahadata Master', 400)} className="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500 text-yellow-500 hover:text-slate-950 font-bold text-xs rounded transition-all duration-300 border border-yellow-500/30">Beli</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LEADERBOARD MODAL */}
+          {showLeaderboard && (
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-900 border-2 border-yellow-500 rounded-2xl max-w-3xl w-full p-6 relative shadow-2xl flex flex-col max-h-[90vh] animate-fadeIn">
+                <button onClick={() => setShowLeaderboard(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+                <div className="text-center mb-4 shrink-0">
+                  <h3 className="text-2xl font-black text-yellow-500 tracking-wide flex items-center justify-center gap-2">
+                    <span>🏆</span>
+                    <span>PAPAN PERINGKAT JAWARA</span>
+                  </h3>
+                  <p className="text-sm text-slate-400">Rekapitulasi nilai dan kecepatan komputasi siswa Tatar Sunda</p>
+                </div>
+
+                {/* COLLAPSIBLE ACCORDION */}
+                <div className="border border-slate-800 rounded-xl mb-4 bg-slate-950 overflow-hidden shrink-0">
+                  <button 
+                    onClick={() => setShowIntegration(!showIntegration)} 
+                    className="w-full text-left p-3 bg-slate-800/80 hover:bg-slate-800 text-xs font-extrabold text-yellow-500 flex justify-between items-center"
+                  >
+                    <span>⚙️ INTEGRASI SINKRONISASI GOOGLE SHEETS</span>
+                    <span>{showIntegration ? '▲' : '▼'}</span>
+                  </button>
+                  
+                  {showIntegration && (
+                    <div className="p-4 border-t border-slate-800 bg-slate-950 space-y-4 max-h-[230px] overflow-y-auto">
+                      <div className="text-xs text-slate-300 space-y-2">
+                        <p className="font-bold text-white text-sm mb-1">📋 Langkah-Langkah Sinkronisasi Google Sheets:</p>
+                        <ol className="list-decimal pl-4 space-y-1 text-slate-400">
+                          <li>Buat spreadsheet baru di Google Drive Anda.</li>
+                          <li>Buka menu <b>Ekstensi</b> &gt; <b>Apps Script</b>.</li>
+                          <li>Tempelkan kode database Apps Script (salin di bawah ini) ke dalam editor script.</li>
+                          <li>Simpan proyek, lalu klik tombol biru <b>Terapkan (Deploy)</b> di kanan atas &gt; pilih <b>Terapkan Baru</b>.</li>
+                          <li>Pilih Jenis: <b>Aplikasi Web (Web App)</b>. Setel jalankan sebagai: <i>Saya (Me)</i>, dan Akses: <i>Siapa saja (Anyone)</i>.</li>
+                          <li>Salin Tautan Aplikasi Web (Web App URL) yang dihasilkan.</li>
+                          <li>Tempelkan tautan URL tersebut di kolom bawah ini dan klik <b>Simpan Setelan</b>.</li>
+                        </ol>
+                      </div>
+
+                      <div>
+                        <span className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Kode Google Apps Script (.gs):</span>
+                        <textarea 
+                          readOnly 
+                          onClick={(e) => e.target.select()}
+                          value={`function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Tanggal Misi Selesai", "Nama Siswa", "Kelas", "Karakter Pahlawan", "Skor Pangaweruh"]);
+    }
+    var data = JSON.parse(e.postData.contents);
+    var timestamp = new Date();
+    sheet.appendRow([timestamp, data.name, data.class, data.avatar, data.score]);
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success" })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}`}
+                          className="w-full h-24 bg-slate-900 border border-slate-800 rounded p-2 text-[10px] font-mono text-slate-400 outline-none select-text" 
+                        />
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-800">
+                        <input 
+                          type="text" 
+                          value={scriptUrl}
+                          onChange={(e) => setScriptUrl(e.target.value)}
+                          placeholder="https://script.google.com/macros/s/.../exec" 
+                          className="flex-grow bg-slate-900 border border-slate-800 focus:border-cyan-400 rounded-xl px-3 py-2 text-xs text-white outline-none transition-colors"
+                        />
+                        <button onClick={saveScriptSettings} className="px-4 py-2 bg-cyan-500 text-slate-950 font-black text-xs rounded-xl transition-all duration-300 shrink-0 shadow-lg shadow-cyan-500/20">
+                          Simpan Setelan
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Table Container */}
+                <div className="overflow-x-auto bg-slate-950 border border-slate-800 rounded-xl flex-grow min-h-[150px]">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-850 border-b border-slate-800 text-[10px] md:text-xs text-yellow-500 uppercase tracking-wider sticky top-0">
+                        <th className="p-3 text-center w-16">Peringkat</th>
+                        <th className="p-3">Siswa</th>
+                        <th className="p-3">Kelas</th>
+                        <th className="p-3">Karakter</th>
+                        <th className="p-3 text-right">Skor Pangaweruh</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-xs text-slate-300">
+                      <tr className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
+                        <td className="p-3 text-center font-extrabold text-yellow-500">🥇</td>
+                        <td className="p-3 font-semibold text-white">Prabu Cyber</td>
+                        <td className="p-3">X-Mipa 1</td>
+                        <td className="p-3">Siliwangi</td>
+                        <td className="p-3 text-right font-extrabold text-cyan-400">1200</td>
+                      </tr>
+                      <tr className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
+                        <td className="p-3 text-center font-extrabold text-slate-300">🥈</td>
+                        <td className="p-3 font-semibold text-white">Neng Sarah</td>
+                        <td className="p-3">VIII-A</td>
+                        <td className="p-3">Kusuma</td>
+                        <td className="p-3 text-right font-extrabold text-cyan-400">950</td>
+                      </tr>
+                      {playerName && (
+                        <tr className="border-b border-slate-800 bg-yellow-500/5 transition-colors">
+                          <td className="p-3 text-center font-extrabold text-amber-600">🥉</td>
+                          <td className="p-3 font-semibold text-white flex items-center gap-1">
+                            <span>{playerName}</span>
+                            <span className="text-[9px] bg-yellow-500/20 text-yellow-500 px-1 rounded font-bold">Kamu</span>
+                          </td>
+                          <td className="p-3">{playerClass}</td>
+                          <td className="p-3">{selectedChar?.name || "Jawara"}</td>
+                          <td className="p-3 text-right font-extrabold text-cyan-400">{score}</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* PANDUAN BUDAYA MODAL */}
+          {showCredit && (
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-900 border-2 border-yellow-500 rounded-2xl max-w-2xl w-full p-6 relative shadow-2xl animate-fadeIn">
+                <button onClick={() => setShowCredit(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-black text-yellow-500 flex items-center justify-center gap-2">
+                    <span>📖</span>
+                    <span>PANDUAN & NILAI BUDAYA</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">Integrasi Nilai Filosofi Sunda dalam Teknologi</p>
+                </div>
+                <div className="space-y-4 max-h-[350px] overflow-y-auto text-sm text-slate-300 leading-relaxed pr-2">
+                  <div className="border-l-4 border-yellow-500 pl-3 space-y-1">
+                    <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">Silih Asih (Saling Mengasihi)</h4>
+                    <p className="text-xs text-slate-400">Menggunakan keterampilan teknologi, analisis data, dan kecerdasan buatan untuk membantu sesama, memecahkan masalah kedaulatan pangan, serta melestarikan kearifan lokal Tatar Sunda.</p>
+                  </div>
+                  <div className="border-l-4 border-cyan-400 pl-3 space-y-1">
+                    <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">Silih Asah (Saling Mencerdaskan)</h4>
+                    <p className="text-xs text-slate-400">Pembelajaran koding, algoritma, klasifikasi AI, serta analisis Big data yang dirancang menyenangkan dan mudah dipahami siswa agar siap menghadapi era kedaulatan digital.</p>
+                  </div>
+                  <div className="border-l-4 border-emerald-400 pl-3 space-y-1">
+                    <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">Silih Asuh (Saling Membimbing)</h4>
+                    <p className="text-xs text-slate-400">Menumbuhkan kesadaran siber yang beretika, memilah berita hoaks, menyaring jutaan data berkecepatan tinggi agar tidak menyesatkan ekosistem sosial Tatar Sunda.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* DAFTAR PUSTAKA MODAL */}
+          {showDaftarPustaka && (
+            <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-900 border-2 border-yellow-500 rounded-2xl max-w-2xl w-full p-6 relative shadow-2xl animate-fadeIn">
+                <button onClick={() => setShowDaftarPustaka(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold font-sans">&times;</button>
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-black text-yellow-500 tracking-wide flex items-center justify-center gap-2">
+                    <span>📚</span>
+                    <span>DAFTAR PUSTAKA</span>
+                  </h3>
+                  <p className="text-sm text-slate-400 mt-1">Sumber Inspirasi, Rekayasa, dan Referensi Gim</p>
+                </div>
+
+                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 text-slate-300 text-xs md:text-sm leading-relaxed text-left">
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <p className="font-bold text-white mb-1">1. Google AI. (2026).</p>
+                    <p className="text-slate-400 font-medium">Gemini AI Language Model. Konstruksi sistem mekanik gim, logika pemrograman, rekayasa materi edukasi, dan perancangan logo edukatif. Diakses melalui antarmuka Google Gemini.</p>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <p className="font-bold text-white mb-1">2. OpenAI. (2026).</p>
+                    <p className="text-slate-400 font-medium">ChatGPT (DALL-E Integration). Pembuatan teks pendukung dan panduan narasi gim. Diakses melalui antarmuka OpenAI.</p>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <p className="font-bold text-white mb-1">3. OpenAI. (2026).</p>
+                    <p className="text-slate-400 font-medium">ChatGPT (DALL-E 3). Aset karakter utama, karakter pendukung, dan elemen visual interaktif dalam gim [Aset Digital].</p>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <p className="font-bold text-white mb-1">4. OpenAI. (2026).</p>
+                    <p className="text-slate-400 font-medium">ChatGPT (DALL-E 3). Desain latar tempat (background environment) lingkungan gim edukasi [Aset Digital].</p>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <p className="font-bold text-white mb-1">5. Pixabay GmbH. (n.d.).</p>
+                    <p className="text-slate-400 font-medium">
+                      Pixabay Sound Effects. Efek suara (sound effects) dan musik latar (backsound) interaktif. Diunduh secara legal di bawah Lisensi Pixabay dari {" "}
+                      <a href="https://pixabay.com/id/sound-effects/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline hover:text-cyan-300">
+                        https://pixabay.com/id/sound-effects/
+                      </a>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-center">
+                  <button 
+                    onClick={() => { sounds.playClick(); setShowDaftarPustaka(false); }} 
+                    className="px-6 py-2 bg-yellow-500 text-slate-950 font-black rounded-lg hover:bg-yellow-400 transition-all duration-300 text-sm shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+                  >
+                    Tutup Daftar Pustaka
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* GENERAL NOTIFICATION MODAL */}
+          {alertOpen && (
+            <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+              <div className="bg-slate-900 border border-yellow-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl">
+                <div className="text-4xl mb-3">{alertIcon}</div>
+                <h4 className="text-lg font-black text-white mb-2">{alertTitle}</h4>
+                <p className="text-sm text-slate-300 mb-6 leading-relaxed" dangerouslySetInnerHTML={{ __html: alertDesc }} />
+                <button 
+                  onClick={closeAlert} 
+                  className="px-6 py-2 bg-yellow-500 text-slate-950 font-black rounded-lg hover:bg-yellow-400 transition-all duration-300 text-sm shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+                >
+                  Baik, Mengerti
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* FOOTER */}
+          <footer className="bg-slate-950 border-t border-slate-900 p-4 text-center text-xs text-slate-500">
+            <p>© 2026 Jagat Data. Semua Hak Dilindungi. Dibuat dengan kearifan lokal Sunda & Teknologi Masa Depan.</p>
+          </footer>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
