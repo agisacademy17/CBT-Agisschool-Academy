@@ -91,13 +91,12 @@
             </div>
         </div>
     </header>
-
+    
     <!-- NOTIFICATION SYSTEM -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
-
-    <!-- MAIN BODY CONTROLLER -->
+    
+    <!-- MAIN CONTROLLER -->
     <main class="flex-grow flex flex-col">
-        
         <!-- SECTION 0: LANDING PAGE -->
         <section id="landingView" class="flex-grow flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-b from-slate-50 to-slate-100">
             <div class="max-w-3xl w-full text-center mb-10 space-y-6 flex flex-col items-center">
@@ -105,7 +104,7 @@
                 <div class="inline-flex px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full uppercase tracking-wider">
                     Sistem Evaluasi Pembelajaran Digital
                 </div>
-                <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                 <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
                     Sistem Ujian dan Try Out Mandiri <span class="text-primary-600">Agis Academy</span>
                 </h2>
                 <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
@@ -118,7 +117,7 @@
                         <i class="fa-solid fa-user-graduate text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Portal Siswa</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">Akses lembar pengerjaan Try Out dan verifikasi token ujian.</p>
+                    <p class="text-sm text-slate-500 leading-relaxed">Akses pengerjaan Ujian dan Try Out.</p>
                     <div class="mt-6 text-xs font-bold text-primary-600 flex items-center space-x-1">
                         <span>Masuk Sebagai Siswa</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -129,7 +128,7 @@
                         <i class="fa-solid fa-user-shield text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Admin</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">Pengelolaan akun, pembuatan bank soal, dan analisis hasil ujian.</p>
+                    <p class="text-sm text-slate-500 leading-relaxed">Kelola siswa, kategori, dan soal.</p>
                     <div class="mt-6 text-xs font-bold text-slate-600 group-hover:text-primary-600 flex items-center space-x-1">
                         <span>Masuk Sebagai Admin</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -140,7 +139,7 @@
 
         <!-- SECTION 1: SISWA LOGIN -->
         <section id="siswaAuthView" class="hidden flex-grow flex items-center justify-center px-4 py-12">
-            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md transition-all duration-300">
                 <button onclick="navigateTo('landing')" class="mb-6 inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-800 transition">
                     <i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke Beranda
                 </button>
@@ -149,398 +148,505 @@
                         <i class="fa-solid fa-id-card text-3xl"></i>
                     </div>
                     <h2 class="text-2xl font-bold text-slate-900">Portal Masuk Siswa</h2>
+                    <p class="text-slate-500 mt-2 text-sm">Gunakan Username dan Password Anda</p>
+                </div>
+                <div class="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="h-2.5 w-2.5 rounded-full bg-slate-300 animate-pulse" id="studentDbIndicator"></span>
+                            <span class="text-xs font-bold text-slate-600" id="studentDbStatusText">Memuat Status...</span>
+                        </div>
+                        <button onclick="toggleStudentDbConfig()" class="text-xs text-primary-600 font-bold hover:text-primary-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-gears"></i> Setelan URL
+                        </button>
+                    </div>
+                    <div id="studentDbConfigPanel" class="hidden mt-3 pt-3 border-t border-slate-200 space-y-2">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">URL Web App Google Apps Script</label>
+                        <div class="flex gap-2">
+                            <input type="url" id="studentGasUrlInput" class="flex-grow px-2.5 py-2 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500 bg-white" placeholder="https://script.google.com/macros/s/...">
+                            <button onclick="saveStudentGasConnection()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition">Simpan</button>
+                        </div>
+                    </div>
+                    <button onclick="syncStudentData()" id="btnSyncStudent" class="w-full mt-3 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-100 transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>Sinkronkan Data Terbaru</span>
+                    </button>
                 </div>
                 <form id="loginForm" onsubmit="handleSiswaLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Username / No. Peserta</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Username / No. Peserta</label>
                         <input type="text" id="siswaUsername" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="CBT-2026-001">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Kata Sandi</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kata Sandi</label>
                         <input type="password" id="siswaPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="••••••••">
                     </div>
-                    <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg transition">Masuk ke Akun</button>
+                    <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/20 transition flex items-center justify-center space-x-2">
+                        <span>Masuk ke Akun</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
                 </form>
             </div>
         </section>
 
-        <!-- SECTION 1B: SISWA RULES & TOKEN -->
+        <!-- SECTION 1B: RULES & TOKEN -->
         <section id="siswaRulesView" class="hidden flex-grow flex items-center justify-center px-4 py-8 bg-slate-50">
-            <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden p-8">
-                <h2 class="text-2xl font-black mb-4" id="rulesStudentHeader">Halo Siswa</h2>
-                <form id="rulesVerificationForm" onsubmit="handleStartExamFromRules(event)" class="space-y-4 max-w-md">
+            <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-primary-600 text-white p-6 md:p-8 flex items-center justify-between">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Kategori Ujian</label>
-                        <select id="rulesSelectKategori" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></select>
+                        <span class="text-xs uppercase font-bold text-primary-100 tracking-wider">Verifikasi Siswa</span>
+                        <h2 class="text-2xl font-black" id="rulesStudentHeader">Halo, Siswa Aktif</h2>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">PIN / Token Ujian</label>
-                        <input type="text" id="rulesPinInput" required placeholder="MATH26" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-mono uppercase">
+                </div>
+                <div class="p-6 md:p-8 flex flex-col md:flex-row gap-8">
+                    <div class="flex-grow space-y-4 text-sm text-slate-600">
+                        <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Aturan Ujian</h3>
+                        <p>1. Dilarang berpindah tab atau aplikasi.</p>
+                        <p>2. Ujian otomatis terkirim jika melanggar lebih dari 3 kali.</p>
                     </div>
-                    <button type="submit" class="w-full py-3 bg-primary-600 text-white rounded-xl font-bold">Mulai Ujian</button>
-                </form>
+                    <div class="w-full md:w-80 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <form id="rulesVerificationForm" onsubmit="handleStartExamFromRules(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Kategori Ujian</label>
+                                <select id="rulesSelectKategori" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">PIN / Token</label>
+                                <input type="text" id="rulesPinInput" required placeholder="MATH26" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-mono tracking-widest uppercase bg-white">
+                            </div>
+                            <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition">Mulai Ujian</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- SECTION 1C: ADMIN LOGIN -->
         <section id="adminAuthView" class="hidden flex-grow flex items-center justify-center px-4 py-12">
             <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
-                <button onclick="navigateTo('landing')" class="mb-6 inline-flex items-center text-xs font-bold text-slate-500">
-                    <i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke Beranda
-                </button>
-                <h2 class="text-2xl font-bold text-slate-900 text-center mb-6">Masuk Administrator</h2>
-                <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Username</label>
-                        <input type="text" id="adminUsername" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Password</label>
-                        <input type="password" id="adminPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-slate-800 text-white rounded-xl font-bold">Otentikasi Dasbor</button>
+                <button onclick="navigateTo('landing')" class="mb-6 text-xs font-bold text-slate-500"><i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali</button>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Masuk Administrator</h2>
+                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <input type="text" id="adminUsername" placeholder="ID Admin" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
+                    <input type="password" id="adminPassword" placeholder="Kata Sandi" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
+                    <button type="submit" class="w-full py-3.5 bg-slate-800 text-white rounded-xl font-bold">Otentikasi</button>
                 </form>
             </div>
         </section>
 
-        <!-- SECTION 5: ADMIN CONSOLE -->
-        <section id="adminView" class="hidden flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Sidebar -->
-                <div class="lg:col-span-1 space-y-2">
-                    <nav class="space-y-1">
-                        <button onclick="setAdminTab('dashboard')" id="tabBtn-dashboard" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 bg-primary-50 text-primary-700 border border-primary-100">
-                            <i class="fa-solid fa-chart-line w-5"></i><span>Dashboard Ringkasan</span>
-                        </button>
-                        <button onclick="setAdminTab('siswa')" id="tabBtn-siswa" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-user-group w-5"></i><span>Kelola Akun Siswa</span>
-                        </button>
-                        <button onclick="setAdminTab('spreadsheet')" id="tabBtn-spreadsheet" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-file-excel w-5 text-emerald-600"></i><span>Hubungkan Spreadsheet</span>
-                        </button>
-                    </nav>
-                </div>
-
-                <!-- Main Content -->
-                <div class="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[500px]">
-                    <!-- Dashboard -->
-                    <div id="adminTab-dashboard" class="admin-panel-content space-y-6">
-                        <h3 class="text-xl font-bold text-slate-900">Ringkasan Sistem CBT</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
-                                <span class="text-xs font-bold text-blue-700 uppercase">Siswa Terdaftar</span>
-                                <span id="statSiswaCount" class="text-2xl font-black text-blue-900 block mt-2">0</span>
-                            </div>
+        <!-- SECTION 2: EXAM VIEW -->
+        <section id="siswaExamView" class="hidden flex-grow flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
+            <div class="flex-grow flex flex-col h-full overflow-y-auto bg-slate-50 p-4 md:p-8">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between mb-6">
+                    <div>
+                        <span id="examTitleLabel" class="text-xs font-bold text-primary-600 uppercase bg-primary-50 px-2.5 py-1 rounded-md">Try Out</span>
+                        <h3 id="examSubjectLabel" class="text-base font-bold text-slate-800 mt-1">Mata Pelajaran</h3>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-amber-600 text-xs font-bold bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100">
+                            Peringatan: <span id="cheatWarningsCount" class="text-sm font-black">0</span>/3
+                        </div>
+                        <div class="text-danger bg-red-50 px-4 py-2 rounded-xl border border-red-100 font-bold">
+                            <span id="examTimer" class="font-mono text-lg">00:00:00</span>
                         </div>
                     </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex-grow mb-6">
+                    <div class="text-xs font-bold text-slate-400 uppercase mb-4">SOAL NOMOR <span id="activeQuestionIndexText" class="text-slate-800 text-sm font-black">1</span></div>
+                    <div id="questionPrompt" class="text-slate-800 text-lg leading-relaxed mb-6"></div>
+                    <div id="answersContainer" class="space-y-3"></div>
+                </div>
+                <div class="flex items-center justify-between mt-auto">
+                    <button onclick="prevQuestion()" class="px-6 py-3 bg-white border border-slate-200 rounded-xl font-semibold">Sebelumnya</button>
+                    <button onclick="nextQuestion()" class="px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold">Berikutnya</button>
+                </div>
+            </div>
+            <div class="w-full md:w-80 bg-white border-t md:border-l border-slate-200 p-4 flex flex-col">
+                <h4 class="font-bold text-slate-800 text-sm mb-3">Navigasi Soal</h4>
+                <div id="examNavigationGrid" class="grid grid-cols-5 gap-2 overflow-y-auto flex-grow"></div>
+                <button onclick="promptSubmitExam()" class="w-full py-3.5 bg-success text-white rounded-xl font-bold mt-4">Kumpulkan</button>
+            </div>
+        </section>
 
-                    <!-- TAB 2: MANAJEMEN SISWA -->
-                    <div id="adminTab-siswa" class="admin-panel-content hidden space-y-6">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Manajemen Akun Siswa</h3>
-                            <button onclick="openModal('siswa')" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-plus"></i> Tambah Siswa
-                            </button>
+        <!-- SECTION 3: RESULT -->
+        <section id="siswaResultView" class="hidden flex-grow flex items-center justify-center px-4 py-12 bg-slate-50">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl text-center">
+                <h2 class="text-3xl font-black text-slate-900">Ujian Selesai!</h2>
+                <div class="grid grid-cols-3 gap-4 my-8 bg-slate-50 p-6 rounded-2xl border">
+                    <div><span class="block text-xs font-bold text-slate-400">Skor</span><span id="resFinalScore" class="text-3xl font-black text-primary-600">0</span></div>
+                    <div><span class="block text-xs font-bold text-slate-400">Benar</span><span id="resCorrectCount" class="text-3xl font-black text-emerald-600">0</span></div>
+                    <div><span class="block text-xs font-bold text-slate-400">Salah</span><span id="resWrongCount" class="text-3xl font-black text-red-500">0</span></div>
+                </div>
+                <button onclick="resetSiswaView()" class="w-full py-3.5 bg-primary-600 text-white rounded-xl font-bold">Kembali ke Beranda</button>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ADMIN DASHBOARD -->
+        <section id="adminView" class="hidden flex-grow max-w-7xl mx-auto w-full px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-1 space-y-2">
+                    <nav class="space-y-1">
+                        <button onclick="setAdminTab('dashboard')" id="tabBtn-dashboard" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold text-left">Dashboard</button>
+                        <button onclick="setAdminTab('siswa')" id="tabBtn-siswa" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold text-left">Kelola Akun Siswa</button>
+                        <button onclick="setAdminTab('kategori')" id="tabBtn-kategori" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold text-left">Kategori & PIN</button>
+                        <button onclick="setAdminTab('soal')" id="tabBtn-soal" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold text-left">Kelola Soal</button>
+                        <button onclick="setAdminTab('spreadsheet')" id="tabBtn-spreadsheet" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold text-left">Integrasi Spreadsheet</button>
+                    </nav>
+                </div>
+                <div class="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200">
+                    <div id="adminTab-dashboard" class="admin-panel-content space-y-6">
+                        <h3 class="text-xl font-bold text-slate-900">Ringkasan Sistem CBT</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-blue-50 p-4 rounded-xl"><span class="text-xs font-bold text-blue-700">Siswa</span><p id="statSiswaCount" class="text-2xl font-bold">0</p></div>
+                            <div class="bg-amber-50 p-4 rounded-xl"><span class="text-xs font-bold text-amber-700">Kategori</span><p id="statKategoriCount" class="text-2xl font-bold">0</p></div>
+                            <div class="bg-emerald-50 p-4 rounded-xl"><span class="text-xs font-bold text-emerald-700">Soal</span><p id="statSoalCount" class="text-2xl font-bold">0</p></div>
                         </div>
-                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-                                <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase">
-                                    <tr>
-                                        <th class="px-6 py-3">No. Peserta / Username</th>
-                                        <th class="px-6 py-3">Nama Siswa</th>
-                                        <th class="px-6 py-3">Kelas</th>
-                                        <th class="px-6 py-3">Status</th>
-                                        <th class="px-6 py-3 text-right">Aksi</th>
-                                    </tr>
+                    </div>
+                    <div id="adminTab-siswa" class="admin-panel-content hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-slate-900">Manajemen Akun Siswa</h3>
+                            <button onclick="openModal('siswa')" class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold">+ Tambah Siswa</button>
+                        </div>
+                        <div class="overflow-x-auto border rounded-xl">
+                            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                                <thead class="bg-slate-50 text-xs text-slate-500 uppercase">
+                                    <tr><th class="px-4 py-3">Username</th><th class="px-4 py-3">Nama</th><th class="px-4 py-3">Status</th><th class="px-4 py-3 text-right">Aksi</th></tr>
                                 </thead>
-                                <tbody id="siswaTableBody" class="divide-y divide-slate-200"></tbody>
+                                <tbody id="siswaTableBody" class="divide-y"></tbody>
                             </table>
                         </div>
                     </div>
-
-                    <!-- TAB 5: INTEGRASI SPREADSHEET -->
-                    <div id="adminTab-spreadsheet" class="admin-panel-content hidden space-y-6">
-                        <h3 class="text-xl font-bold text-slate-900">Sinkronisasi Database Google Spreadsheet</h3>
-                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Google Apps Script Web App URL</label>
-                                <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <button onclick="saveAndTestGasConnection()" class="px-5 py-2.5 bg-primary-600 text-white text-xs font-bold rounded-xl">Simpan & Uji Koneksi</button>
-                            </div>
+                    <div id="adminTab-kategori" class="admin-panel-content hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-slate-900">Kategori & PIN</h3>
+                            <button onclick="openModal('kategori')" class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold">+ Tambah Kategori</button>
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-xs font-bold text-slate-700 uppercase">Kode Apps Script (Code.gs)</label>
-                            <textarea id="appsScriptCodeArea" readonly class="w-full h-48 p-3 bg-slate-900 text-slate-100 font-mono rounded-lg text-xs" onclick="this.select()"></textarea>
+                        <div id="kategoriListContainer" class="grid grid-cols-2 gap-4"></div>
+                    </div>
+                    <div id="adminTab-soal" class="admin-panel-content hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-slate-900">Kelola Soal</h3>
+                            <button onclick="openModal('soal')" class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold">+ Tambah Soal</button>
                         </div>
+                        <div id="questionsContainer" class="space-y-4"></div>
+                    </div>
+                    <div id="adminTab-spreadsheet" class="admin-panel-content hidden space-y-4">
+                        <h3 class="text-xl font-bold text-slate-900">Integrasi Google Spreadsheet</h3>
+                        <input type="url" id="gasUrlInput" placeholder="URL Web App Google Apps Script" class="w-full px-4 py-3 border rounded-xl text-sm">
+                        <button onclick="saveAndTestGasConnection()" class="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-xs font-bold">Simpan & Integrasikan</button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- MODAL TAMBAH / EDIT SISWA (TERMASUK ISIAN KELAS) -->
+    <!-- MODAL SISWA -->
     <div id="modalSiswa" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 border border-slate-100 shadow-xl">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6">
             <h3 class="text-lg font-bold text-slate-900 mb-4" id="modalSiswaTitle">Tambah Akun Siswa</h3>
             <form onsubmit="saveSiswa(event)" class="space-y-4">
                 <input type="hidden" id="siswaFormId">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nomor Peserta / Username</label>
-                    <input type="text" id="siswaFormUsername" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: CBT-2026-001">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kata Sandi (Password)</label>
-                    <input type="password" id="siswaFormPassword" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="••••••••">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Siswa</label>
-                    <input type="text" id="siswaFormNama" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: Zahra Almira">
-                </div>
-                <!-- FIELD KELAS BARU -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kelas</label>
-                    <input type="text" id="siswaFormKelas" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: XII-MIPA-1">
-                </div>
+                <input type="text" id="siswaFormUsername" placeholder="Username" required class="w-full px-3 py-2 border rounded-xl text-sm">
+                <input type="password" id="siswaFormPassword" placeholder="Password" required class="w-full px-3 py-2 border rounded-xl text-sm">
+                <input type="text" id="siswaFormNama" placeholder="Nama Siswa" required class="w-full px-3 py-2 border rounded-xl text-sm">
                 <div class="flex items-center space-x-2">
-                    <input type="checkbox" id="siswaFormStatus" checked class="rounded border-slate-300 text-primary-600 focus:ring-primary-500">
-                    <label class="text-sm text-slate-700 font-medium">Status Akun Aktif</label>
+                    <input type="checkbox" id="siswaFormStatus" checked>
+                    <label class="text-sm">Status Aktif</label>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeModal('siswa')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold">Simpan Data</button>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('siswa')" class="px-4 py-2 border rounded-xl text-xs">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold">Simpan Data</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT SYSTEM ENGINE -->
+    <!-- SCRIPT ENGINE CORE -->
     <script>
         let state = {
             view: 'landing', 
             gasUrl: localStorage.getItem('cbt_gas_url') || '',
             connected: false,
             siswaList: JSON.parse(localStorage.getItem('cbt_siswa')) || [
-                { id: 'S1', username: 'CBT-2026-001', password: '123', nama: 'Zahra Almira', kelas: 'XII-IPA-1', status: true },
-                { id: 'S2', username: 'CBT-2026-002', password: '123', nama: 'Fajar Nugraha', kelas: 'XII-IPA-2', status: true }
+                { id: 'S1', username: 'CBT-2026-001', password: '123', nama: 'Zahra Almira', status: true }
             ],
             kategoriList: JSON.parse(localStorage.getItem('cbt_kategori')) || [
                 { id: 'K1', nama: 'UTBK Matematika Kuantitatif', durasi: 15, pin: 'MATH26', status: true }
             ],
-            soalList: [],
-            rekapHasil: []
+            soalList: JSON.parse(localStorage.getItem('cbt_soal')) || [
+                { id: 'Q1', kategoriId: 'K1', tipe: 'PG', prompt: 'Berapakah $2 + 2$?', opsi: { A: '3', B: '4', C: '5' }, kunci: 'B' }
+            ],
+            rekapHasil: JSON.parse(localStorage.getItem('cbt_rekap')) || []
         };
+
+        let session = { siswa: null, kategori: null, timerInterval: null, timeLeft: 0, answers: {}, currentQuestionIdx: 0, filteredQuestions: [] };
 
         window.onload = function() {
             saveToLocalStorage();
-            generateGoogleAppsScriptCode();
-            renderAdminDashboard();
-            renderSiswaTable();
-            if (state.gasUrl) {
-                document.getElementById('gasUrlInput').value = state.gasUrl;
-            }
+            updateStudentDbStatus();
+            if (state.gasUrl) fetchAndApplyLatestData(state.gasUrl);
+            navigateTo('landing');
         };
 
         function saveToLocalStorage() {
             localStorage.setItem('cbt_siswa', JSON.stringify(state.siswaList));
             localStorage.setItem('cbt_kategori', JSON.stringify(state.kategoriList));
+            localStorage.setItem('cbt_soal', JSON.stringify(state.soalList));
+            localStorage.setItem('cbt_rekap', JSON.stringify(state.rekapHasil));
+        }
+
+        async function fetchAndApplyLatestData(url) {
+            if (!url) return false;
+            try {
+                const res = await fetch(`${url}?action=pull`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                if (data.siswa) state.siswaList = data.siswa;
+                if (data.kategori) state.kategoriList = data.kategori;
+                if (data.soal) state.soalList = data.soal;
+                if (data.rekap) state.rekapHasil = data.rekap;
+                saveToLocalStorage();
+                renderSiswaTable();
+                renderKategoriList();
+                renderAdminDashboard();
+                updateStudentDbStatus();
+                return true;
+            } catch (err) {
+                console.error("Gagal menarik data cloud", err);
+                return false;
+            }
+        }
+
+        function pushDataToSpreadsheet(action, dataObj) {
+            if (!state.gasUrl) return;
+            fetch(state.gasUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: action, data: dataObj })
+            }).then(() => showToast("Data disinkronkan ke Spreadsheet!", "success"))
+              .catch(e => console.error("Gagal sync post", e));
         }
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `p-4 rounded-xl shadow-lg border text-xs font-bold flex items-center space-x-2 transition-all duration-300 bg-white ${type === 'success' ? 'border-emerald-100 text-emerald-800' : 'border-red-100 text-red-800'}`;
-            toast.innerHTML = `<span>${message}</span>`;
+            toast.className = `p-4 rounded-xl shadow-lg border text-xs font-bold bg-white ${type === 'danger' ? 'text-red-600 border-red-200' : 'text-emerald-700 border-emerald-200'}`;
+            toast.innerText = message;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function navigateTo(view) {
+        function navigateTo(target) {
             document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-            const target = document.getElementById(view + 'View');
-            if (target) target.classList.remove('hidden');
+            document.getElementById(target + 'View').classList.remove('hidden');
+            if (target === 'admin') setAdminTab('dashboard');
         }
 
-        function openModal(modalName) {
-            if (modalName === 'siswa') {
-                document.getElementById('siswaFormId').value = '';
-                document.getElementById('siswaFormUsername').value = '';
-                document.getElementById('siswaFormPassword').value = '';
-                document.getElementById('siswaFormNama').value = '';
-                document.getElementById('siswaFormKelas').value = '';
-                document.getElementById('siswaFormStatus').checked = true;
-                document.getElementById('modalSiswaTitle').innerText = 'Tambah Akun Siswa';
-            }
-            document.getElementById('modal' + modalName.charAt(0).toUpperCase() + modalName.slice(1)).classList.remove('hidden');
-        }
-
-        function closeModal(modalName) {
-            document.getElementById('modal' + modalName.charAt(0).toUpperCase() + modalName.slice(1)).classList.add('hidden');
-        }
-
-        // FUNGSI UTAMA SIMPAN DATA SISWA (TELAH DIPERBAIKI)
-        function saveSiswa(event) {
-            event.preventDefault();
-            const id = document.getElementById('siswaFormId').value;
-            const username = document.getElementById('siswaFormUsername').value.trim();
-            const password = document.getElementById('siswaFormPassword').value;
-            const nama = document.getElementById('siswaFormNama').value.trim();
-            const kelas = document.getElementById('siswaFormKelas').value.trim();
-            const status = document.getElementById('siswaFormStatus').checked;
-
-            if (id) {
-                // Update Data Siswa
-                const idx = state.siswaList.findIndex(s => s.id === id);
-                if (idx > -1) {
-                    state.siswaList[idx] = { id, username, password, nama, kelas, status };
-                }
+        function updateStudentDbStatus() {
+            const ind = document.getElementById('studentDbIndicator');
+            const txt = document.getElementById('studentDbStatusText');
+            if (state.gasUrl) {
+                ind.className = "h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse";
+                txt.innerText = "Basis Data Cloud Terhubung";
             } else {
-                // Tambah Data Siswa Baru
-                const newSiswa = {
-                    id: 'S' + Date.now(),
-                    username,
-                    password,
-                    nama,
-                    kelas,
-                    status
-                };
-                state.siswaList.push(newSiswa);
+                ind.className = "h-2.5 w-2.5 rounded-full bg-amber-400";
+                txt.innerText = "Mode Lokal (Offline)";
             }
+        }
 
+        function toggleStudentDbConfig() {
+            document.getElementById('studentDbConfigPanel').classList.toggle('hidden');
+        }
+
+        function saveStudentGasConnection() {
+            const url = document.getElementById('studentGasUrlInput').value.trim();
+            if(!url) return;
+            state.gasUrl = url;
+            localStorage.setItem('cbt_gas_url', url);
+            syncStudentData();
+        }
+
+        async function syncStudentData() {
+            showToast("Mensinkronkan...", "warning");
+            const ok = await fetchAndApplyLatestData(state.gasUrl);
+            if(ok) showToast("Data terbaru berhasil dimuat!", "success");
+        }
+
+        function saveAndTestGasConnection() {
+            const url = document.getElementById('gasUrlInput').value.trim();
+            state.gasUrl = url;
+            localStorage.setItem('cbt_gas_url', url);
+            syncStudentData();
+        }
+
+        // SISWA AUTH & EXAM LOGIC
+        async function handleSiswaLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('siswaUsername').value.trim();
+            const p = document.getElementById('siswaPassword').value.trim();
+            if (state.gasUrl) await fetchAndApplyLatestData(state.gasUrl);
+            
+            const student = state.siswaList.find(s => String(s.username) === u && String(s.password) === p);
+            if (!student) {
+                showToast("Username atau Password salah!", "danger");
+                return;
+            }
+            session.siswa = student;
+            navigateTo('siswaRules');
+            document.getElementById('rulesStudentHeader').innerText = `Halo, ${student.nama}`;
+            const sel = document.getElementById('rulesSelectKategori');
+            sel.innerHTML = '<option value="">-- Pilih Ujian --</option>';
+            state.kategoriList.filter(k=>k.status).forEach(k => {
+                sel.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+            });
+        }
+
+        function handleStartExamFromRules(e) {
+            e.preventDefault();
+            const katId = document.getElementById('rulesSelectKategori').value;
+            const pin = document.getElementById('rulesPinInput').value.trim();
+            const kat = state.kategoriList.find(k => k.id === katId);
+            if (!kat || kat.pin !== pin) {
+                showToast("PIN Ujian Salah!", "danger");
+                return;
+            }
+            session.kategori = kat;
+            session.filteredQuestions = state.soalList.filter(q => q.kategoriId === kat.id);
+            if(session.filteredQuestions.length === 0) {
+                showToast("Belum ada soal!", "danger");
+                return;
+            }
+            navigateTo('siswaExam');
+            loadQuestion(0);
+        }
+
+        function loadQuestion(idx) {
+            session.currentQuestionIdx = idx;
+            const q = session.filteredQuestions[idx];
+            document.getElementById('activeQuestionIndexText').innerText = idx + 1;
+            document.getElementById('questionPrompt').innerText = q.prompt;
+            const box = document.getElementById('answersContainer');
+            box.innerHTML = '';
+            
+            Object.keys(q.opsi || {}).forEach(key => {
+                const isSel = session.answers[q.id] === key;
+                box.innerHTML += `
+                    <div onclick="session.answers['${q.id}']='${key}'; loadQuestion(${idx});" class="p-4 border rounded-xl cursor-pointer ${isSel ? 'bg-primary-50 border-primary-500' : ''}">
+                        <strong>${key}.</strong> ${q.opsi[key]}
+                    </div>
+                `;
+            });
+            renderNav();
+        }
+
+        function renderNav() {
+            const grid = document.getElementById('examNavigationGrid');
+            grid.innerHTML = '';
+            session.filteredQuestions.forEach((q, i) => {
+                const ans = session.answers[q.id];
+                grid.innerHTML += `<button onclick="loadQuestion(${i})" class="h-8 w-8 text-xs border rounded-lg ${ans ? 'bg-emerald-500 text-white' : ''}">${i+1}</button>`;
+            });
+        }
+
+        function prevQuestion() { if(session.currentQuestionIdx > 0) loadQuestion(session.currentQuestionIdx - 1); }
+        function nextQuestion() { if(session.currentQuestionIdx < session.filteredQuestions.length - 1) loadQuestion(session.currentQuestionIdx + 1); }
+
+        function promptSubmitExam() {
+            let correct = 0;
+            session.filteredQuestions.forEach(q => {
+                if (session.answers[q.id] === q.kunci) correct++;
+            });
+            const score = Math.round((correct / session.filteredQuestions.length) * 100);
+            document.getElementById('resFinalScore').innerText = score;
+            document.getElementById('resCorrectCount').innerText = correct;
+            document.getElementById('resWrongCount').innerText = session.filteredQuestions.length - correct;
+            
+            const rekap = { id: 'R' + Date.now(), nama: session.siswa.nama, skor: score };
+            state.rekapHasil.push(rekap);
             saveToLocalStorage();
-            renderSiswaTable();
-            renderAdminDashboard();
-            closeModal('siswa');
-            showToast("Data siswa berhasil disimpan!", "success");
+            pushDataToSpreadsheet('pushRekap', rekap);
+            navigateTo('siswaResult');
         }
 
-        function editSiswa(id) {
-            const s = state.siswaList.find(item => item.id === id);
-            if (!s) return;
-            document.getElementById('siswaFormId').value = s.id;
-            document.getElementById('siswaFormUsername').value = s.username;
-            document.getElementById('siswaFormPassword').value = s.password;
-            document.getElementById('siswaFormNama').value = s.nama;
-            document.getElementById('siswaFormKelas').value = s.kelas || '';
-            document.getElementById('siswaFormStatus').checked = s.status;
-            document.getElementById('modalSiswaTitle').innerText = 'Edit Akun Siswa';
-            document.getElementById('modalSiswa').classList.remove('hidden');
-        }
+        function resetSiswaView() { navigateTo('landing'); }
 
-        function deleteSiswa(id) {
-            if (confirm("Apakah Anda yakin ingin menghapus siswa ini?")) {
-                state.siswaList = state.siswaList.filter(s => s.id !== id);
-                saveToLocalStorage();
-                renderSiswaTable();
-                renderAdminDashboard();
-                showToast("Siswa berhasil dihapus.", "success");
+        // ADMIN CONTROLLER
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            if (document.getElementById('adminUsername').value === 'admin' && document.getElementById('adminPassword').value === 'admin1122') {
+                navigateTo('admin');
+            } else {
+                showToast("Login Admin Gagal!", "danger");
             }
+        }
+
+        function setAdminTab(tab) {
+            document.querySelectorAll('.admin-panel-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`adminTab-${tab}`).classList.remove('hidden');
+        }
+
+        function renderAdminDashboard() {
+            document.getElementById('statSiswaCount').innerText = state.siswaList.length;
+            document.getElementById('statKategoriCount').innerText = state.kategoriList.length;
+            document.getElementById('statSoalCount').innerText = state.soalList.length;
         }
 
         function renderSiswaTable() {
             const tbody = document.getElementById('siswaTableBody');
             tbody.innerHTML = '';
             state.siswaList.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-mono text-slate-700">${s.username}</td>
-                    <td class="px-6 py-4 font-semibold text-slate-900">${s.nama}</td>
-                    <td class="px-6 py-4 text-slate-600">${s.kelas || '-'}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${s.status ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
-                            ${s.status ? 'Aktif' : 'Nonaktif'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-right space-x-2">
-                        <button onclick="editSiswa('${s.id}')" class="text-primary-600 font-bold hover:underline">Edit</button>
-                        <button onclick="deleteSiswa('${s.id}')" class="text-danger font-bold hover:underline">Hapus</button>
-                    </td>
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-3 font-mono">${s.username}</td>
+                        <td class="px-4 py-3">${s.nama}</td>
+                        <td class="px-4 py-3">${s.status ? 'Aktif' : 'Nonaktif'}</td>
+                        <td class="px-4 py-3 text-right">
+                            <button onclick="deleteSiswa('${s.id}')" class="text-red-600 font-bold">Hapus</button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function renderAdminDashboard() {
-            document.getElementById('statSiswaCount').innerText = state.siswaList.length;
+        function renderKategoriList() {
+            const container = document.getElementById('kategoriListContainer');
+            container.innerHTML = '';
+            state.kategoriList.forEach(k => {
+                container.innerHTML += `<div class="p-4 border rounded-xl bg-slate-50"><strong>${k.nama}</strong><br>PIN: ${k.pin}</div>`;
+            });
         }
 
-        function setAdminTab(tabId) {
-            document.querySelectorAll('.admin-panel-content').forEach(p => p.classList.add('hidden'));
-            document.getElementById('adminTab-' + tabId).classList.remove('hidden');
+        function openModal(type) {
+            if(type === 'siswa') document.getElementById('modalSiswa').classList.remove('hidden');
         }
 
-        function saveAndTestGasConnection() {
-            const url = document.getElementById('gasUrlInput').value.trim();
-            if (!url) return showToast("URL Spreadsheet wajib diisi!", "danger");
-            
-            state.gasUrl = url;
-            localStorage.setItem('cbt_gas_url', url);
-            showToast("Menguji koneksi Google Apps Script...", "success");
-
-            fetch(`${url}?action=ping`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        showToast("Integrasi Google Spreadsheet Berhasil!", "success");
-                    } else {
-                        throw new Error();
-                    }
-                })
-                .catch(() => showToast("Koneksi gagal! Periksa kembali URL Deployment Anda.", "danger"));
+        function closeModal(type) {
+            if(type === 'siswa') document.getElementById('modalSiswa').classList.add('hidden');
         }
 
-        function generateGoogleAppsScriptCode() {
-            const code = `function doGet(e) {
-  var action = e.parameter.action;
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (action === 'ping') {
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
-  }
-  if (action === 'pull') {
-    var data = {
-      siswa: getSheetData(ss, 'Siswa'),
-      kategori: getSheetData(ss, 'Kategori'),
-      soal: getSheetData(ss, 'Soal'),
-      rekap: getSheetData(ss, 'Rekap')
-    };
-    return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function getSheetData(ss, sheetName) {
-  var sheet = ss.getSheetByName(sheetName);
-  if (!sheet) return [];
-  var rows = sheet.getDataRange().getValues();
-  if (rows.length < 2) return [];
-  var headers = rows[0];
-  var result = [];
-  for (var i = 1; i < rows.length; i++) {
-    var obj = {};
-    for (var j = 0; j < headers.length; j++) {
-      obj[headers[j].toString().toLowerCase()] = rows[i][j];
-    }
-    result.push(obj);
-  }
-  return result;
-}`;
-            document.getElementById('appsScriptCodeArea').value = code;
-        }
-
-        function handleSiswaLogin(e) {
+        function saveSiswa(e) {
             e.preventDefault();
-            showToast("Fitur login siswa aktif", "success");
+            const newSiswa = {
+                id: 'S' + Date.now(),
+                username: document.getElementById('siswaFormUsername').value.trim(),
+                password: document.getElementById('siswaFormPassword').value.trim(),
+                nama: document.getElementById('siswaFormNama').value.trim(),
+                status: document.getElementById('siswaFormStatus').checked
+            };
+            state.siswaList.push(newSiswa);
+            saveToLocalStorage();
+            pushDataToSpreadsheet('saveSiswa', newSiswa);
+            renderSiswaTable();
+            closeModal('siswa');
+            showToast("Siswa Berhasil Ditambahkan & Disimpan ke Spreadsheet!", "success");
         }
 
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            navigateTo('admin');
-            showToast("Selamat datang di Dasbor Admin!", "success");
-        }
-
-        function handleStartExamFromRules(e) {
-            e.preventDefault();
-            showToast("Memulai Ujian...", "success");
+        function deleteSiswa(id) {
+            state.siswaList = state.siswaList.filter(s => s.id !== id);
+            saveToLocalStorage();
+            pushDataToSpreadsheet('deleteSiswa', { id: id });
+            renderSiswaTable();
+            showToast("Data siswa dihapus!", "success");
         }
     </script>
 </body>
