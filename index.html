@@ -764,7 +764,7 @@
                     <input type="text" id="siswaFormNama" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: Zahra Almira">
                 </div>
                 <div>
-                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kelas / Rombel</label>
+                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kelas</label>
                     <input type="text" id="siswaFormNama" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: Zahra Almira">
                 </div>
                 <div class="flex items-center space-x-2">
@@ -2600,6 +2600,7 @@
             const username = document.getElementById('siswaFormUsername').value.trim();
             const password = document.getElementById('siswaFormPassword').value;
             const nama = document.getElementById('siswaFormNama').value.trim();
+            const Kelas = document.getElementById('siswaFormKelas').value.trim();
             const status = document.getElementById('siswaFormStatus').checked;
 
             if (id) {
@@ -2608,13 +2609,14 @@
                     s.username = username;
                     s.password = password;
                     s.nama = nama;
+                    s.kelas = kelas;
                     s.status = status;
                 }
                 showToast("Data siswa berhasil diperbarui!", "success");
             } else {
                 state.siswaList.push({
                     id: 'S' + Date.now(),
-                    username, password, nama, status
+                    username, password, nama, kelas, status
                 });
                 showToast("Siswa baru berhasil didaftarkan!", "success");
             }
@@ -2636,6 +2638,7 @@
             document.getElementById('siswaFormUsername').value = s.username;
             document.getElementById('siswaFormPassword').value = s.password || '';
             document.getElementById('siswaFormNama').value = s.nama;
+            document.getElementById('siswaFormkelas').value = s.kelas;
             document.getElementById('siswaFormStatus').checked = s.status;
         }
 
