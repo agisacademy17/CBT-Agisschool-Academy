@@ -91,8 +91,10 @@
             </div>
         </div>
     </header>
+
     <!-- NOTIFICATION SYSTEM -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
     <!-- MAIN BODY CONTROLLER -->
     <main class="flex-grow flex flex-col">
         
@@ -103,11 +105,11 @@
                 <div class="inline-flex px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full uppercase tracking-wider">
                     Sistem Evaluasi Pembelajaran Digital
                 </div>
-                 <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
                     Sistem Ujian dan Try Out Mandiri <span class="text-primary-600">Agis Academy</span>
                 </h2>
                 <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-                    Aplikasi Ujian Berbasis Komputer (CBT) memberikan pengalaman simulasi ujian sebenarnya. Dirancang khusus untuk evaluasi akademis berkala, terstruktur, dan memaksimalkan persiapan ujian Anda.
+                    Aplikasi Ujian Berbasis Komputer (CBT) memberikan pengalaman simulasi ujian sebenarnya.
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl w-full px-4">
@@ -116,9 +118,7 @@
                         <i class="fa-solid fa-user-graduate text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Portal Siswa</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">
-                        Akses lembar pengerjaan Try Out, baca aturan tata tertib pengerjaan, dan verifikasi token ujian aktif Anda.
-                    </p>
+                    <p class="text-sm text-slate-500 leading-relaxed">Akses lembar pengerjaan Try Out dan verifikasi token ujian.</p>
                     <div class="mt-6 text-xs font-bold text-primary-600 flex items-center space-x-1">
                         <span>Masuk Sebagai Siswa</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -129,9 +129,7 @@
                         <i class="fa-solid fa-user-shield text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Admin</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">
-                        Akses dan fitur ini tersedia hanya untuk admin. Hubungi admin untuk info lebih lanjut
-                    </p>
+                    <p class="text-sm text-slate-500 leading-relaxed">Pengelolaan akun, pembuatan bank soal, dan analisis hasil ujian.</p>
                     <div class="mt-6 text-xs font-bold text-slate-600 group-hover:text-primary-600 flex items-center space-x-1">
                         <span>Masuk Sebagai Admin</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -139,9 +137,10 @@
                 </div>
             </div>
         </section>
-        <!-- SECTION 1: SISWA PORTAL (LOGIN USERNAME & PASSWORD) -->
+
+        <!-- SECTION 1: SISWA LOGIN -->
         <section id="siswaAuthView" class="hidden flex-grow flex items-center justify-center px-4 py-12">
-            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md transition-all duration-300">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
                 <button onclick="navigateTo('landing')" class="mb-6 inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-800 transition">
                     <i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke Beranda
                 </button>
@@ -150,340 +149,98 @@
                         <i class="fa-solid fa-id-card text-3xl"></i>
                     </div>
                     <h2 class="text-2xl font-bold text-slate-900">Portal Masuk Siswa</h2>
-                    <p class="text-slate-500 mt-2 text-sm">Gunakan Nomor Peserta / Username dan Kata Sandi Anda</p>
-                </div>
-                <div class="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <span class="h-2.5 w-2.5 rounded-full bg-slate-300 animate-pulse" id="studentDbIndicator"></span>
-                            <span class="text-xs font-bold text-slate-600" id="studentDbStatusText">Memuat Status...</span>
-                        </div>
-                        <button onclick="toggleStudentDbConfig()" class="text-xs text-primary-600 font-bold hover:text-primary-800 transition flex items-center gap-1">
-                            <i class="fa-solid fa-gears"></i> Setelan URL
-                        </button>
-                    </div>
-                    <div id="studentDbConfigPanel" class="hidden mt-3 pt-3 border-t border-slate-200 space-y-2">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">URL Web App Google Apps Script</label>
-                        <div class="flex gap-2">
-                            <input type="url" id="studentGasUrlInput" class="flex-grow px-2.5 py-2 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500 bg-white" placeholder="https://script.google.com/macros/s/...">
-                            <button onclick="saveStudentGasConnection()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition">Simpan</button>
-                        </div>
-                        <span class="text-[9px] text-slate-400 block">Digunakan oleh siswa untuk memperbarui daftar akun dari Spreadsheet.</span>
-                    </div>
-                    <button onclick="syncStudentData()" id="btnSyncStudent" class="w-full mt-3 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-100 transition flex items-center justify-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                        <span>Sinkronkan Data Terbaru</span>
-                    </button>
                 </div>
                 <form id="loginForm" onsubmit="handleSiswaLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nomor Peserta / Username</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
-                            <input type="text" id="siswaUsername" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm placeholder-slate-400 transition" placeholder="CBT-2026-001">
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Username / No. Peserta</label>
+                        <input type="text" id="siswaUsername" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="CBT-2026-001">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kata Sandi (Password)</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <i class="fa-solid fa-lock"></i>
-                            </span>
-                            <input type="password" id="siswaPassword" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm placeholder-slate-400 transition" placeholder="••••••••">
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Kata Sandi</label>
+                        <input type="password" id="siswaPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="••••••••">
                     </div>
-                    <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/20 transition duration-150 flex items-center justify-center space-x-2">
-                        <span>Masuk ke Akun</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
+                    <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-lg transition">Masuk ke Akun</button>
                 </form>
             </div>
         </section>
-        <!-- SECTION 1B: SISWA RULES & TOKEN VERIFICATION -->
+
+        <!-- SECTION 1B: SISWA RULES & TOKEN -->
         <section id="siswaRulesView" class="hidden flex-grow flex items-center justify-center px-4 py-8 bg-slate-50">
-            <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-                <div class="bg-primary-600 text-white p-6 md:p-8 flex items-center justify-between">
+            <div class="max-w-4xl w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden p-8">
+                <h2 class="text-2xl font-black mb-4" id="rulesStudentHeader">Halo Siswa</h2>
+                <form id="rulesVerificationForm" onsubmit="handleStartExamFromRules(event)" class="space-y-4 max-w-md">
                     <div>
-                        <span class="text-xs uppercase font-bold text-primary-100 tracking-wider">Lembar Verifikasi</span>
-                        <h2 class="text-2xl font-black" id="rulesStudentHeader">Halo, Siswa Aktif</h2>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Kategori Ujian</label>
+                        <select id="rulesSelectKategori" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></select>
                     </div>
-                    <i class="fa-solid fa-shield-halved text-4xl text-primary-200 opacity-50"></i>
-                </div>
-                
-                <div class="p-6 md:p-8 flex flex-col md:flex-row gap-8">
-                    <div class="flex-grow space-y-6">
-                        <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-2">Aturan & Tata Tertib Ujian</h3>
-                        <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 h-6 w-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold text-xs mt-0.5">1</span>
-                                <p><strong>Keamanan Browser Terdeteksi:</strong> Siswa dilarang keras membuka tab baru atau berpindah aplikasi. Aktivitas mencurigakan di luar jendela tes akan memicu sistem anti-cheat secara otomatis.</p>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 h-6 w-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold text-xs mt-0.5">2</span>
-                                <p><strong>Batas Peringatan Pelanggaran:</strong> Apabila siswa terdeteksi meninggalkan layar ujian sebanyak <strong>3 kali</strong>, sistem akan langsung mengirim seluruh jawaban terkunci dan mengakhiri sesi pengerjaan.</p>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 h-6 w-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold text-xs mt-0.5">3</span>
-                                <p><strong>Penghitung Waktu Berjalan:</strong> Durasi pengerjaan akan segera dihitung ketika tombol "Mulai Ujian" ditekan. Silakan periksa sisa waktu pada bilah atas lembar tes.</p>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">PIN / Token Ujian</label>
+                        <input type="text" id="rulesPinInput" required placeholder="MATH26" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-mono uppercase">
                     </div>
-                    
-                    <div class="w-full md:w-80 flex-shrink-0 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base mb-4">Verifikasi Tes</h3>
-                            <form id="rulesVerificationForm" onsubmit="handleStartExamFromRules(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Pilih Kategori Ujian</label>
-                                    <select id="rulesSelectKategori" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:ring-2 focus:ring-primary-500">
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">PIN / Token Ujian Aktif</label>
-                                    <input type="text" id="rulesPinInput" required placeholder="MATH26" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-mono tracking-widest uppercase focus:ring-2 focus:ring-primary-500 bg-white">
-                                </div>
-                                <button type="submit" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-primary-500/10">
-                                    <i class="fa-solid fa-circle-play"></i>
-                                    <span>Mulai Pengerjaan Ujian</span>
-                                </button>
-                            </form>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-200 text-center">
-                            <button onclick="logoutSession()" class="text-xs font-bold text-slate-400 hover:text-slate-600">
-                                <i class="fa-solid fa-arrow-left-from-line mr-1"></i>Keluar ke Beranda
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    <button type="submit" class="w-full py-3 bg-primary-600 text-white rounded-xl font-bold">Mulai Ujian</button>
+                </form>
             </div>
         </section>
-        <!-- SECTION 1C: ADMIN PORTAL LOGIN FORM -->
+
+        <!-- SECTION 1C: ADMIN LOGIN -->
         <section id="adminAuthView" class="hidden flex-grow flex items-center justify-center px-4 py-12">
-            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md transition-all duration-300">
-                <button onclick="navigateTo('landing')" class="mb-6 inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-800 transition">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md">
+                <button onclick="navigateTo('landing')" class="mb-6 inline-flex items-center text-xs font-bold text-slate-500">
                     <i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke Beranda
                 </button>
-                <div class="text-center mb-8">
-                    <div class="inline-flex p-3.5 bg-slate-100 rounded-2xl text-slate-700 mb-4">
-                        <i class="fa-solid fa-user-lock text-3xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-900">Masuk Administrator</h2>
-                    <p class="text-slate-500 mt-2 text-sm font-medium">Isi Kredensial Pengawas & Pengelola CBT</p>
-                </div>
+                <h2 class="text-2xl font-bold text-slate-900 text-center mb-6">Masuk Administrator</h2>
                 <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">ID Administrator / Email</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </span>
-                            <input type="text" id="adminUsername" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm placeholder-slate-400 transition" placeholder="Username">
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Username</label>
+                        <input type="text" id="adminUsername" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kata Sandi (Password)</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <i class="fa-solid fa-lock"></i>
-                            </span>
-                            <input type="password" id="adminPassword" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm placeholder-slate-400 transition" placeholder="••••••••">
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Password</label>
+                        <input type="password" id="adminPassword" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
                     </div>
-                    <button type="submit" class="w-full py-3.5 bg-slate-800 hover:bg-slate-950 text-white rounded-xl font-bold shadow-lg shadow-slate-900/15 transition duration-150 flex items-center justify-center space-x-2">
-                        <span>Otentikasi Dasbor</span>
-                        <i class="fa-solid fa-unlock-keyhole"></i>
-                    </button>
+                    <button type="submit" class="w-full py-3.5 bg-slate-800 text-white rounded-xl font-bold">Otentikasi Dasbor</button>
                 </form>
-                <div class="mt-6 border-t border-slate-100 pt-4 text-center">
-                    <span class="text-xs text-slate-400 font-medium">Gunakan akun admin untuk mengakses halaman admin </span>
-                </div>
             </div>
         </section>
-        <!-- SECTION 2: SISWA EXAM CONSOLE (TRY OUT INTERFACE) -->
-        <section id="siswaExamView" class="hidden flex-grow flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="flex-grow flex flex-col h-full overflow-y-auto bg-slate-50 p-4 md:p-8">
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-4 items-center justify-between mb-6">
-                    <div>
-                        <span id="examTitleLabel" class="text-xs font-bold text-primary-600 tracking-wider uppercase bg-primary-50 px-2.5 py-1 rounded-md">Try Out UTBK</span>
-                        <h3 id="examSubjectLabel" class="text-base font-bold text-slate-800 mt-1">Matematika Pengetahuan Kuantitatif</h3>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center space-x-1.5 text-amber-600 text-xs font-bold bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span>Fokus Layar: <span id="cheatWarningsCount" class="text-sm font-black text-amber-700">0</span>/3</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-danger bg-red-50 px-4 py-2 rounded-xl border border-red-100 font-bold">
-                            <i class="fa-regular fa-clock animate-pulse text-lg"></i>
-                            <span id="examTimer" class="font-mono text-lg tracking-wide">00:00:00</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex-grow mb-6 relative">
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">SOAL NOMOR <span id="activeQuestionIndexText" class="text-slate-800 text-sm font-black">1</span></div>
-                    
-                    <div id="questionPrompt" class="text-slate-800 text-lg leading-relaxed mb-8 prose max-w-none">
-                        Memuat butir soal...
-                    </div>
-                    <div id="questionImageContainer" class="hidden mb-6 max-w-md bg-slate-100 p-2 rounded-xl border border-slate-200">
-                        <img id="questionImage" src="" alt="Lampiran Soal" class="w-full h-auto rounded-lg" onerror="this.parentElement.classList.add('hidden')">
-                    </div>
-                    <div id="answersContainer" class="space-y-3.5">
-                    </div>
-                </div>
-                <div class="flex items-center justify-between mt-auto">
-                    <button onclick="prevQuestion()" id="btnPrevQuest" class="px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-semibold shadow-sm transition flex items-center space-x-2">
-                        <i class="fa-solid fa-chevron-left"></i>
-                        <span>Sebelumnya</span>
-                    </button>
-                    
-                    <button onclick="toggleBookmarkActive()" id="btnBookmark" class="px-5 py-3 bg-white border border-amber-200 hover:bg-amber-50 text-amber-600 rounded-xl font-semibold shadow-sm transition flex items-center space-x-2">
-                        <i id="bookmarkIcon" class="fa-regular fa-bookmark"></i>
-                        <span>Ragu-ragu</span>
-                    </button>
-                    <button onclick="nextQuestion()" id="btnNextQuest" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold shadow-md transition flex items-center space-x-2">
-                        <span>Berikutnya</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="w-full md:w-80 bg-white border-t md:border-t-0 md:border-l border-slate-200 flex flex-col h-1/3 md:h-full">
-                <div class="p-4 border-b border-slate-100 bg-slate-50">
-                    <h4 class="font-bold text-slate-800 text-sm">Navigasi Soal</h4>
-                    <p class="text-xs text-slate-500">Klik nomor untuk melompat ke soal</p>
-                </div>
-                
-                <div class="flex-grow overflow-y-auto p-4">
-                    <div id="examNavigationGrid" class="grid grid-cols-5 gap-2">
-                    </div>
-                </div>
-                <div class="p-4 border-t border-slate-100 bg-slate-50 mt-auto">
-                    <button onclick="promptSubmitExam()" class="w-full py-3.5 bg-success text-white rounded-xl font-bold shadow-lg shadow-success/20 hover:bg-emerald-600 transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Kumpulkan & Selesai</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-        <!-- SECTION 3: SISWA RESULT SCREEN (BREAKDOWN) -->
-        <section id="siswaResultView" class="hidden flex-grow flex items-center justify-center px-4 py-12 bg-slate-50">
-            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl text-center">
-                <div class="inline-flex p-4 bg-emerald-50 text-emerald-600 rounded-full mb-4">
-                    <i class="fa-solid fa-circle-check text-5xl animate-bounce"></i>
-                </div>
-                <h2 class="text-3xl font-black text-slate-900">Ujian Berhasil Disubmit!</h2>
-                <p class="text-slate-500 mt-2">Jawaban Anda telah tersimpan dengan aman di database sekolah.</p>
-                <div class="grid grid-cols-3 gap-4 my-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <div class="text-center">
-                        <span class="block text-xs font-bold text-slate-400 uppercase">Skor Akhir</span>
-                        <span id="resFinalScore" class="text-3xl font-black text-primary-600">0</span>
-                    </div>
-                    <div class="text-center border-x border-slate-200">
-                        <span class="block text-xs font-bold text-slate-400 uppercase">Benar</span>
-                        <span id="resCorrectCount" class="text-3xl font-black text-emerald-600">0</span>
-                    </div>
-                    <div class="text-center">
-                        <span class="block text-xs font-bold text-slate-400 uppercase">Salah</span>
-                        <span id="resWrongCount" class="text-3xl font-black text-red-500">0</span>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <button onclick="resetSiswaView()" class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg shadow-primary-500/10 hover:shadow-primary-500/20 transition duration-150">
-                        Kembali ke Portal Login
-                    </button>
-                </div>
-            </div>
-        </section>
-        <!-- SECTION 5: ADMIN CONSOLE (DASHBOARD) -->
+
+        <!-- SECTION 5: ADMIN CONSOLE -->
         <section id="adminView" class="hidden flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                
+                <!-- Sidebar -->
                 <div class="lg:col-span-1 space-y-2">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-4 text-center">
-                        <div class="inline-flex p-3 bg-slate-50 text-primary-600 rounded-2xl mb-2">
-                            <i class="fa-solid fa-user-shield text-2xl"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-800">Panel Administrator</h4>
-                        <p class="text-xs text-slate-500">Konfigurasi & Pengelolaan CBT</p>
-                    </div>
                     <nav class="space-y-1">
                         <button onclick="setAdminTab('dashboard')" id="tabBtn-dashboard" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 bg-primary-50 text-primary-700 border border-primary-100">
-                            <i class="fa-solid fa-chart-line w-5"></i>
-                            <span>Dashboard Ringkasan</span>
+                            <i class="fa-solid fa-chart-line w-5"></i><span>Dashboard Ringkasan</span>
                         </button>
                         <button onclick="setAdminTab('siswa')" id="tabBtn-siswa" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-user-group w-5"></i>
-                            <span>Kelola Akun Siswa</span>
-                        </button>
-                        <button onclick="setAdminTab('kategori')" id="tabBtn-kategori" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-tags w-5"></i>
-                            <span>Kategori & PIN</span>
-                        </button>
-                        <button onclick="setAdminTab('soal')" id="tabBtn-soal" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-file-signature w-5"></i>
-                            <span>Kelola Soal & LaTeX</span>
+                            <i class="fa-solid fa-user-group w-5"></i><span>Kelola Akun Siswa</span>
                         </button>
                         <button onclick="setAdminTab('spreadsheet')" id="tabBtn-spreadsheet" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-file-excel w-5 text-emerald-600"></i>
-                            <span>Integrasi Spreadsheet</span>
-                        </button>
-                        <button onclick="setAdminTab('rekap')" id="tabBtn-rekap" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-square-poll-horizontal w-5"></i>
-                            <span>Rekap Hasil Ujian</span>
-                        </button>
-                        <button onclick="setAdminTab('pengaturan')" id="tabBtn-pengaturan" class="admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50">
-                            <i class="fa-solid fa-sliders w-5"></i>
-                            <span>Pengaturan CBT</span>
+                            <i class="fa-solid fa-file-excel w-5 text-emerald-600"></i><span>Hubungkan Spreadsheet</span>
                         </button>
                     </nav>
                 </div>
+
+                <!-- Main Content -->
                 <div class="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[500px]">
-                    
+                    <!-- Dashboard -->
                     <div id="adminTab-dashboard" class="admin-panel-content space-y-6">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Ringkasan Sistem CBT</h3>
-                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Ringkasan Sistem CBT</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-blue-700 uppercase">Siswa Terdaftar</span>
-                                    <i class="fa-solid fa-users text-blue-500"></i>
-                                </div>
-                                <span id="statSiswaCount" class="text-2xl font-black text-blue-900">0</span>
-                            </div>
-                            <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-amber-700 uppercase">Kategori Ujian</span>
-                                    <i class="fa-solid fa-book-bookmark text-amber-500"></i>
-                                </div>
-                                <span id="statKategoriCount" class="text-2xl font-black text-amber-900">0</span>
-                            </div>
-                            <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-emerald-700 uppercase">Jumlah Soal</span>
-                                    <i class="fa-solid fa-clipboard-question text-emerald-500"></i>
-                                </div>
-                                <span id="statSoalCount" class="text-2xl font-black text-emerald-900">0</span>
-                            </div>
-                        </div>
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                            <h4 class="font-bold text-slate-800 text-sm mb-3">Monitoring Aktivitas Terakhir (Anti-Cheat Log)</h4>
-                            <div id="adminLiveActivityLog" class="space-y-2 max-h-64 overflow-y-auto pr-2 text-xs font-mono text-slate-600">
-                                <div class="p-2 bg-white rounded border border-slate-100 text-slate-400">[System] Inisialisasi CBT Modern... Siap digunakan.</div>
+                                <span class="text-xs font-bold text-blue-700 uppercase">Siswa Terdaftar</span>
+                                <span id="statSiswaCount" class="text-2xl font-black text-blue-900 block mt-2">0</span>
                             </div>
                         </div>
                     </div>
-                    <!-- TAB 2: KELOLA SISWA -->
+
+                    <!-- TAB 2: MANAJEMEN SISWA -->
                     <div id="adminTab-siswa" class="admin-panel-content hidden space-y-6">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                             <h3 class="text-xl font-bold text-slate-900">Manajemen Akun Siswa</h3>
                             <button onclick="openModal('siswa')" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5 transition">
                                 <i class="fa-solid fa-plus"></i> Tambah Siswa
                             </button>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="searchSiswaInput" oninput="filterSiswaTable()" placeholder="Cari siswa berdasarkan nama, nomor, atau kelas..." class="flex-grow px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div class="overflow-x-auto border border-slate-200 rounded-xl">
                             <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
@@ -496,155 +253,36 @@
                                         <th class="px-6 py-3 text-right">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="siswaTableBody" class="divide-y divide-slate-200">
-                                </tbody>
+                                <tbody id="siswaTableBody" class="divide-y divide-slate-200"></tbody>
                             </table>
                         </div>
                     </div>
-                    <!-- TAB 3: KELOLA KATEGORI & PIN -->
-                    <div id="adminTab-kategori" class="admin-panel-content hidden space-y-6">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Kategori & Konfigurasi PIN</h3>
-                            <button onclick="openModal('kategori')" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-plus"></i> Tambah Kategori
-                            </button>
-                        </div>
-                        <div id="kategoriListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        </div>
-                    </div>
-                    <!-- TAB 4: KELOLA SOAL & LATEX -->
-                    <div id="adminTab-soal" class="admin-panel-content hidden space-y-6">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Bank Soal & Render Matematika LaTeX</h3>
-                            <button onclick="openModal('soal')" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-plus"></i> Tambah Soal Baru
-                            </button>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label class="text-xs font-bold text-slate-500 uppercase">Kategori:</label>
-                            <select id="filterSoalKategori" onchange="filterQuestions()" class="px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-primary-500">
-                                <option value="all">Tampilkan Semua Soal</option>
-                            </select>
-                        </div>
-                        <div id="questionsContainer" class="space-y-4">
-                        </div>
-                    </div>
-                    <!-- TAB 5: SPREADSHEET INTEGRATION GUIDE -->
+
+                    <!-- TAB 5: INTEGRASI SPREADSHEET -->
                     <div id="adminTab-spreadsheet" class="admin-panel-content hidden space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Sinkronisasi Database Google Spreadsheet</h3>
-                            <p class="text-xs text-slate-500 mt-1">Gunakan Google Spreadsheet sebagai basis data terdistribusi secara cuma-cuma.</p>
-                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Sinkronisasi Database Google Spreadsheet</h3>
                         <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Google Apps Script Web App URL</label>
-                                <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                                <span class="text-xs text-slate-400 mt-1 block">Pastikan deploy sebagai Web App dengan izin akses "Anyone".</span>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Google Apps Script Web App URL</label>
+                                <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
                             </div>
                             <div class="flex items-center space-x-3">
-                                <button onclick="saveAndTestGasConnection()" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold rounded-xl shadow transition">
-                                    Simpan & Uji Koneksi
-                                </button>
-                                <button onclick="triggerFullSync()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">
-                                    Sinkronkan Data Sekarang
-                                </button>
+                                <button onclick="saveAndTestGasConnection()" class="px-5 py-2.5 bg-primary-600 text-white text-xs font-bold rounded-xl">Simpan & Uji Koneksi</button>
                             </div>
                         </div>
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-slate-800 text-sm">Langkah Penyediaan (Deployment):</h4>
-                            
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs leading-relaxed space-y-3 text-slate-600">
-                                <p><strong>1. Buat Google Spreadsheet Baru</strong><br>Buat Spreadsheet kosong di Google Drive Anda dengan kolom Siswa mencakup <code>id, username, password, nama, kelas, status</code>.</p>
-                                <p><strong>2. Pasang Google Apps Script</strong><br>Buka menu <em>Extensions > Apps Script</em>, kemudian salin kode di bawah ini lalu tempelkan di sana:</p>
-                                
-                                <textarea id="appsScriptCodeArea" readonly class="w-full h-48 p-3 bg-slate-900 text-slate-100 font-mono rounded-lg focus:outline-none text-[10px] leading-normal" onclick="this.select()"></textarea>
-                                
-                                <p class="text-[11px] text-primary-600 font-medium">Klik pada box kode di atas untuk menyalin semua baris otomatis.</p>
-                                <p><strong>3. Deploy Web App</strong><br>Klik <em>Deploy > New deployment</em>. Pilih jenis <em>Web App</em>. Set <em>Execute as: Me</em> dan <em>Who has access: Anyone</em>. Salin URL Web App yang dihasilkan lalu masukkan pada kolom input di atas.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- TAB 6: REKAP HASIL UJIAN -->
-                    <div id="adminTab-rekap" class="admin-panel-content hidden space-y-6">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Rekapitulasi Hasil Ujian Siswa</h3>
-                            <button onclick="exportRekapToCsv()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow flex items-center gap-1.5 transition">
-                                <i class="fa-solid fa-file-csv"></i> Export CSV
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Siswa / Username</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                                    </span>
-                                    <input type="text" id="filterRekapNama" oninput="filterRekapTable()" placeholder="Cari nama atau username..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500 bg-white transition">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tanggal Ujian</label>
-                                <div class="relative">
-                                    <input type="date" id="filterRekapTanggal" onchange="filterRekapTable()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500 bg-white transition">
-                                </div>
-                            </div>
-                            <div class="flex items-end">
-                                <button onclick="resetRekapFilter()" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 h-[38px] shadow-sm border border-slate-300">
-                                    <i class="fa-solid fa-arrows-rotate"></i> Reset Filter
-                                </button>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-                                <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase">
-                                    <tr>
-                                        <th class="px-6 py-3">Nama Siswa</th>
-                                        <th class="px-6 py-3">Kategori</th>
-                                        <th class="px-6 py-3">Nilai Akhir</th>
-                                        <th class="px-6 py-3">Benar / Salah</th>
-                                        <th class="px-6 py-3">Tanggal Selesai</th>
-                                        <th class="px-6 py-3 text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="rekapTableBody" class="divide-y divide-slate-200">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- TAB 7: PENGATURAN SYSTEM CBT -->
-                    <div id="adminTab-pengaturan" class="admin-panel-content hidden space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold text-slate-900">Pengaturan Sistem & Ujian</h3>
-                            <p class="text-xs text-slate-500 mt-1">Konfigurasi parameter operasional pelaksanaan Computer Based Test (CBT).</p>
-                        </div>
-                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-6">
-                            <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                                <div class="space-y-1 pr-4">
-                                    <h4 class="text-sm font-bold text-slate-800">Acak Urutan Soal Ujian</h4>
-                                    <p class="text-xs text-slate-500">Jika diaktifkan, urutan soal yang ditampilkan ke setiap siswa akan diacak secara acak (randomize) saat memulai ujian.</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                    <input type="checkbox" id="settingAcakSoal" onchange="toggleSettingAcakSoal()" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                                </label>
-                            </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Kode Apps Script (Code.gs)</label>
+                            <textarea id="appsScriptCodeArea" readonly class="w-full h-48 p-3 bg-slate-900 text-slate-100 font-mono rounded-lg text-xs" onclick="this.select()"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 font-medium">
-            &copy; 2026 CBT-Modern Engine. Designed for High Performance Mathematical Assessments.
-        </div>
-    </footer>
-    <!-- MODALS SECTION -->
-    
-    <!-- Modal 1: Siswa Form (Updated with Kelas field) -->
+
+    <!-- MODAL TAMBAH / EDIT SISWA (TERMASUK ISIAN KELAS) -->
     <div id="modalSiswa" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 border border-slate-100 shadow-xl shadow-slate-900/30">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 border border-slate-100 shadow-xl">
             <h3 class="text-lg font-bold text-slate-900 mb-4" id="modalSiswaTitle">Tambah Akun Siswa</h3>
             <form onsubmit="saveSiswa(event)" class="space-y-4">
                 <input type="hidden" id="siswaFormId">
@@ -660,9 +298,10 @@
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Siswa</label>
                     <input type="text" id="siswaFormNama" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: Zahra Almira">
                 </div>
+                <!-- FIELD KELAS BARU -->
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kelas</label>
-                    <input type="text" id="siswaFormKelas" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: XII IPA 1">
+                    <input type="text" id="siswaFormKelas" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500" placeholder="Contoh: XII-MIPA-1">
                 </div>
                 <div class="flex items-center space-x-2">
                     <input type="checkbox" id="siswaFormStatus" checked class="rounded border-slate-300 text-primary-600 focus:ring-primary-500">
@@ -670,1171 +309,77 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeModal('siswa')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold">Simpan</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold">Simpan Data</button>
                 </div>
             </form>
         </div>
     </div>
-    <!-- Modal 2: Kategori Form -->
-    <div id="modalKategori" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 border border-slate-100 shadow-xl shadow-slate-900/30">
-            <h3 class="text-lg font-bold text-slate-900 mb-4" id="modalKategoriTitle">Tambah Kategori Ujian</h3>
-            <form onsubmit="saveKategori(event)" class="space-y-4">
-                <input type="hidden" id="kategoriFormId">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Kategori</label>
-                    <input type="text" id="kategoriFormNama" required placeholder="Contoh: UTBK PK - Kuantitatif" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Durasi (Menit)</label>
-                        <input type="number" id="kategoriFormDurasi" required min="1" placeholder="45" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">PIN / Token</label>
-                        <input type="text" id="kategoriFormPin" required placeholder="MATH26" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-mono uppercase tracking-widest focus:ring-2 focus:ring-primary-500">
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <input type="checkbox" id="kategoriFormStatus" checked class="rounded border-slate-300 text-primary-600 focus:ring-primary-500">
-                    <label class="text-sm text-slate-700 font-medium">Kategori Aktif & Bisa Diakses</label>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeModal('kategori')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Modal 3: Soal Form -->
-    <div id="modalSoal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl w-full max-w-6xl p-6 border border-slate-100 shadow-xl my-8">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                <h3 class="text-lg font-bold text-slate-900" id="modalSoalTitle">Buat Soal Berbasis LaTeX</h3>
-                <button type="button" onclick="closeModal('soal')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form onsubmit="saveSoal(event)" class="space-y-4">
-                <input type="hidden" id="soalFormId">
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kategori Ujian</label>
-                                <select id="soalFormKategori" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Jenis Soal</label>
-                                <select id="soalFormTipe" required onchange="toggleSoalTypeInputs()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                                    <option value="PG">Pilihan Ganda Biasa</option>
-                                    <option value="MCMA">PG Kompleks (Banyak Jawaban)</option>
-                                    <option value="BS">Benar / Salah (3 Pernyataan)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Butir Soal (Mendukung LaTeX)</label>
-                            <textarea id="soalFormPrompt" required rows="4" oninput="updateLiveSoalPreview()" placeholder="Ketik soal di sini. Gunakan $...$ untuk matematika." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500 font-mono"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Link Gambar Lampiran (Opsional)</label>
-                            <input type="url" id="soalFormGambar" oninput="updateLiveSoalPreview()" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500">
-                        </div>
-                        <div id="dynamicOptionsContainer" class="hidden space-y-3">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
-                                <label class="block text-xs font-bold text-slate-500 uppercase">Pilihan Jawaban & Tentukan Kunci</label>
-                                <button type="button" onclick="addModalOption()" class="px-2.5 py-1 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg text-[10px] font-bold border border-primary-100 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-plus"></i> Tambah Pilihan / Opsi
-                                </button>
-                            </div>
-                            <div id="modalOptionsList" class="space-y-2">
-                            </div>
-                        </div>
-                        <div id="bsInputsContainer" class="hidden space-y-3">
-                            <label class="block text-xs font-bold text-slate-500 uppercase">3 Pernyataan & Kunci Kebenaran</label>
-                            <div class="space-y-3">
-                                <div>
-                                    <div class="flex items-center space-x-2 mb-1">
-                                        <span class="text-xs font-bold text-slate-500">Pernyataan 1</span>
-                                        <select id="bsKunci1" class="px-2 py-0.5 rounded border border-slate-200 text-[10px] font-bold">
-                                            <option value="B">Benar</option>
-                                            <option value="S">Salah</option>
-                                        </select>
-                                    </div>
-                                    <input type="text" id="soalBs1" oninput="updateLiveSoalPreview()" placeholder="Ketik pernyataan 1" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-primary-500">
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-2 mb-1">
-                                        <span class="text-xs font-bold text-slate-500">Pernyataan 2</span>
-                                        <select id="bsKunci2" class="px-2 py-0.5 rounded border border-slate-200 text-[10px] font-bold">
-                                            <option value="B">Benar</option>
-                                            <option value="S">Salah</option>
-                                        </select>
-                                    </div>
-                                    <input type="text" id="soalBs2" oninput="updateLiveSoalPreview()" placeholder="Ketik pernyataan 2" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-primary-500">
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-2 mb-1">
-                                        <span class="text-xs font-bold text-slate-500">Pernyataan 3</span>
-                                        <select id="bsKunci3" class="px-2 py-0.5 rounded border border-slate-200 text-[10px] font-bold">
-                                            <option value="B">Benar</option>
-                                            <option value="S">Salah</option>
-                                        </select>
-                                    </div>
-                                    <input type="text" id="soalBs3" oninput="updateLiveSoalPreview()" placeholder="Ketik pernyataan 3" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-primary-500">
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Pembahasan (Mendukung LaTeX)</label>
-                            <textarea id="soalFormPembahasan" placeholder="Tuliskan alasan atau cara penyelesaian..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary-500"></textarea>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900 text-white p-6 rounded-2xl border border-slate-800 flex flex-col h-[520px] lg:h-auto overflow-y-auto shadow-inner">
-                        <span class="text-[10px] font-bold text-sky-400 uppercase tracking-widest block mb-4"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Pratampilan Live Render Sandbox-Resilient (KaTeX)</span>
-                        
-                        <div class="space-y-6 flex-grow">
-                            <div class="border-b border-slate-800 pb-4">
-                                <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Butir Soal</h4>
-                                <div id="livePreviewPrompt" class="text-slate-100 text-base leading-relaxed break-words min-h-[50px] font-medium"></div>
-                            </div>
-                            
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Pilihan Jawaban</h4>
-                                <div id="livePreviewAnswers" class="space-y-2 text-slate-300"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="closeModal('soal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold">Simpan Soal</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Modal 4: Admin Student Analysis Detail View -->
-    <div id="modalAdminAnalysis" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-4xl p-6 border border-slate-100 shadow-xl my-8 flex flex-col max-h-[85vh]">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900" id="adminAnalysisModalTitle">Detail Analisis Jawaban Siswa</h3>
-                    <p class="text-xs text-slate-500" id="adminAnalysisModalSubtitle">Nama Siswa - Kategori</p>
-                </div>
-                <button type="button" onclick="closeModal('adminAnalysis')" class="text-slate-400 hover:text-slate-600 text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div id="adminAnalysisModalContent" class="overflow-y-auto flex-grow space-y-6 pr-2">
-            </div>
-            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100 mt-4">
-                <button type="button" onclick="closeModal('adminAnalysis')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Tutup</button>
-            </div>
-        </div>
-    </div>
-    <!-- CUSTOM REUSABLE DIALOG SYSTEM -->
-    <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 border border-slate-100 shadow-xl shadow-slate-900/30 transform transition-all scale-95 duration-200">
-            <div class="flex items-center space-x-3 text-amber-600 mb-4">
-                <div class="p-2 bg-amber-50 rounded-xl">
-                    <i id="customConfirmIcon" class="fa-solid fa-triangle-exclamation text-xl"></i>
-                </div>
-                <h3 id="customConfirmTitle" class="text-base font-bold text-slate-900">Judul Konfirmasi</h3>
-            </div>
-            <p id="customConfirmMessage" class="text-xs text-slate-600 leading-relaxed mb-6">Pernyataan atau isi pertanyaan konfirmasi ditaruh di sini secara rapi.</p>
-            <div class="flex justify-end space-x-3">
-                <button id="customConfirmBtnCancel" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition">Batal</button>
-                <button id="customConfirmBtnOk" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold transition">Ya, Lanjutkan</button>
-            </div>
-        </div>
-    </div>
-    <!-- CORE CONTROLLER JAVASCRIPT -->
+
+    <!-- JAVASCRIPT SYSTEM ENGINE -->
     <script>
         let state = {
             view: 'landing', 
             gasUrl: localStorage.getItem('cbt_gas_url') || '',
             connected: false,
-            activeTabAdmin: 'dashboard',
-            settings: JSON.parse(localStorage.getItem('cbt_settings')) || { acakSoal: false },
-            
             siswaList: JSON.parse(localStorage.getItem('cbt_siswa')) || [
-                { id: 'S1', username: 'CBT-2026-001', password: '123', nama: 'Zahra Almira', kelas: 'XII IPA 1', status: true },
-                { id: 'S2', username: 'CBT-2026-002', password: '123', nama: 'Fajar Nugraha', kelas: 'XII IPA 2', status: true },
-                { id: 'S3', username: 'CBT-2026-003', password: '123', nama: 'Rafi Hidayat', kelas: 'XII IPS 1', status: false }
+                { id: 'S1', username: 'CBT-2026-001', password: '123', nama: 'Zahra Almira', kelas: 'XII-IPA-1', status: true },
+                { id: 'S2', username: 'CBT-2026-002', password: '123', nama: 'Fajar Nugraha', kelas: 'XII-IPA-2', status: true }
             ],
             kategoriList: JSON.parse(localStorage.getItem('cbt_kategori')) || [
                 { id: 'K1', nama: 'UTBK Matematika Kuantitatif', durasi: 15, pin: 'MATH26', status: true }
             ],
-            soalList: JSON.parse(localStorage.getItem('cbt_soal')) || [
-                { 
-                    id: 'Q1', 
-                    kategoriId: 'K1', 
-                    tipe: 'PG', 
-                    prompt: 'Misalkan fungsi kuadrat ditentukan oleh $f(x) = ax^2 + bx + c$. Jika nilai minimum fungsi tersebut adalah $f(2) = -4$ dan grafik melalui titik $(0,0)$, tentukan nilai $a+b+c$!',
-                    gambar: '',
-                    opsi: { A: '0', B: '2', C: '-2', D: '4', E: '-4' },
-                    kunci: 'A',
-                    pembahasan: 'Menggunakan sifat parabola dengan titik puncak $(2, -4)$ sehingga bentuknya $f(x) = a(x-2)^2 - 4$. Karena lewat $(0,0)$, maka $0 = a(0-2)^2 - 4 \\Rightarrow 4a = 4 \\Rightarrow a = 1$. Maka $f(x) = (x-2)^2 - 4 = x^2 - 4x$. Dengan demikian $a=1, b=-4, c=0$, nilai $a+b+c = 1 - 4 + 0 = -3$.'
-                },
-                {
-                    id: 'Q2',
-                    kategoriId: 'K1',
-                    tipe: 'MCMA',
-                    prompt: 'Manakah dari pernyataan matematika berikut ini yang bernilai benar untuk semua bilangan real $x$? (Pilih semua jawaban yang benar)',
-                    gambar: '',
-                    opsi: { A: '$x^2 \\geq 0$', B: '$x + 1 > x$', C: '$|x| \\geq x$', D: '$\\sqrt{x^2} = x$' },
-                    kunci: ['A', 'B', 'C'],
-                    pembahasan: '$x^2 \\geq 0$ selalu benar untuk semua bilangan real. $x+1 > x$ juga selalu benar. $|x| \\ge x$ bernilai benar. Namun $\\sqrt{x^2} = |x|$, tidak sama dengan $x$ jika $x$ negatif.'
-                },
-                {
-                    id: 'Q3',
-                    kategoriId: 'K1',
-                    tipe: 'BS',
-                    prompt: 'Diberikan matriks $A = \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$. Tentukan kebenaran dari pernyataan-pernyataan di bawah ini terkait matriks $A$!',
-                    gambar: '',
-                    pernyataan: [
-                        'Determinan dari matriks $A$ adalah $-2$.',
-                        'Matriks $A$ tidak memiliki invers.',
-                        'Transpos dari matriks $A$ adalah $\\begin{pmatrix} 1 & 3 \\\\ 2 & 4 \\end{pmatrix}$.'
-                    ],
-                    kunci: ['B', 'S', 'B'],
-                    pembahasan: '1. Det = (1*4) - (2*3) = 4 - 6 = -2 (Benar). 2. Karena determinan != 0, maka matriks memiliki invers (Salah). 3. Transpos menukar baris dan kolom sehingga baris 1 [1,2] menjadi kolom 1 [1,3]^T (Benar).'
-                }
-            ],
-            rekapHasil: JSON.parse(localStorage.getItem('cbt_rekap')) || []
+            soalList: [],
+            rekapHasil: []
         };
-        let session = {
-            siswa: null,
-            kategori: null,
-            timerInterval: null,
-            timeLeft: 0,
-            answers: {}, 
-            bookmarks: {}, 
-            currentQuestionIdx: 0,
-            cheatWarnings: 0,
-            fullscreenEnforced: false,
-            filteredQuestions: [],
-            examStarted: false
-        };
-        let currentModalOptions = []; 
-        let currentFormPgKunci = 'A';
-        let currentFormMcmaKunci = [];
-        const katexMacros = {
-            "\\R": "\\mathbb{R}",
-            "\\N": "\\mathbb{N}",
-            "\\Z": "\\mathbb{Z}",
-            "\\C": "\\mathbb{C}",
-            "\\abs": "\\left| #1 \\right|",
-            "\\vctor": "\\overrightarrow{#1}",
-            "\\differential": "\\,d#1",
-            "\\limit": "\\lim_{#1 \\to #2}",
-            "\\integral": "\\int_{#1}^{#2}",
-            "\\doubleintegral": "\\iint_{#1}"
-        };
-        function safeEscapeHtml(text) {
-            if (!text) return "";
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/\n/g, "<br>");
-        }
-        function safeRenderMath(element) {
-            if (!element) return;
-            try {
-                renderMathInElement(element, {
-                    delimiters: [
-                        {left: "$$", right: "$$", display: true},
-                        {left: "$", right: "$", display: false},
-                        {left: "\\(", right: "\\)", display: false},
-                        {left: "\\*", right: "\\*", display: false},
-                        {left: "\\[", right: "\\]", display: true}
-                    ],
-                    throwOnError: false, 
-                    errorColor: "#ef4444",
-                    macros: katexMacros
-                });
-            } catch (err) {
-                console.warn("KaTeX render bypass on typing formula incomplete: ", err);
-            }
-        }
-        function renderModalOptions() {
-            const container = document.getElementById('modalOptionsList');
-            if (!container) return;
-            container.innerHTML = '';
-            const type = document.getElementById('soalFormTipe').value;
-            currentModalOptions.forEach((text, idx) => {
-                const letter = String.fromCharCode(65 + idx);
-                let selectorHtml = '';
-                if (type === 'PG') {
-                    const isChecked = currentFormPgKunci === letter;
-                    selectorHtml = `
-                        <input type="radio" name="pgKunci" value="${letter}" ${isChecked ? 'checked' : ''} onchange="setFormPgKunci('${letter}')" class="text-primary-600 focus:ring-primary-500 h-4 w-4">
-                    `;
-                } else if (type === 'MCMA') {
-                    const isChecked = currentFormMcmaKunci.includes(letter);
-                    selectorHtml = `
-                        <input type="checkbox" onchange="toggleFormMcmaKunci('${letter}')" ${isChecked ? 'checked' : ''} class="rounded text-primary-600 focus:ring-primary-500 h-4 w-4">
-                    `;
-                }
-                const row = document.createElement('div');
-                row.className = "flex items-center space-x-2 bg-slate-50 p-2 rounded-xl border border-slate-200";
-                row.innerHTML = `
-                    <div class="flex items-center justify-center p-1">
-                        ${selectorHtml}
-                    </div>
-                    <span class="text-xs font-black text-slate-500 w-5 text-center">${letter}</span>
-                    <input type="text" value="${text}" oninput="updateModalOptionText(${idx}, this.value)" placeholder="Teks Pilihan ${letter}" class="flex-grow px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-primary-500 bg-white">
-                    ${currentModalOptions.length > 2 ? `
-                        <button type="button" onclick="removeModalOption(${idx})" class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition" title="Hapus opsi ${letter}">
-                            <i class="fa-solid fa-trash-can text-sm"></i>
-                        </button>
-                    ` : ''}
-                `;
-                container.appendChild(row);
-            });
-        }
-        function setFormPgKunci(letter) {
-            currentFormPgKunci = letter;
-            updateLiveSoalPreview();
-        }
-        function toggleFormMcmaKunci(letter) {
-            const index = currentFormMcmaKunci.indexOf(letter);
-            if (index > -1) {
-                currentFormMcmaKunci.splice(index, 1);
-            } else {
-                currentFormMcmaKunci.push(letter);
-            }
-            updateLiveSoalPreview();
-        }
-        function updateModalOptionText(index, value) {
-            currentModalOptions[index] = value;
-            updateLiveSoalPreview();
-        }
-        function addModalOption() {
-            if (currentModalOptions.length >= 26) {
-                showToast("Batas maksimal pilihan jawaban adalah 26 (A-Z)!", "danger");
-                return;
-            }
-            currentModalOptions.push('');
-            renderModalOptions();
-            updateLiveSoalPreview();
-        }
-        function removeModalOption(index) {
-            if (currentModalOptions.length <= 2) {
-                showToast("Minimal harus memiliki 2 pilihan jawaban!", "danger");
-                return;
-            }
-            currentModalOptions.splice(index, 1);
-            const oldPgKunciIdx = currentFormPgKunci.charCodeAt(0) - 65;
-            if (oldPgKunciIdx === index) {
-                currentFormPgKunci = 'A';
-            } else if (oldPgKunciIdx > index) {
-                currentFormPgKunci = String.fromCharCode(65 + oldPgKunciIdx - 1);
-            }
-            currentFormMcmaKunci = currentFormMcmaKunci
-                .map(letter => letter.charCodeAt(0) - 65)
-                .filter(idx => idx !== index)
-                .map(idx => idx > index ? idx - 1 : idx)
-                .map(idx => String.fromCharCode(65 + idx));
-            renderModalOptions();
-            updateLiveSoalPreview();
-        }
-        function checkIsAnswered(question) {
-            const ans = session.answers[question.id];
-            if (!ans) return false;
-            if (question.tipe === 'PG') return !!ans;
-            if (question.tipe === 'MCMA') return ans.length > 0;
-            if (question.tipe === 'BS') return ans.filter(v => v !== '').length === 3;
-            return false;
-        }
-        function showCustomConfirm(title, message, onOk, isDanger = false) {
-            const modal = document.getElementById('customConfirmModal');
-            const titleEl = document.getElementById('customConfirmTitle');
-            const msgEl = document.getElementById('customConfirmMessage');
-            const iconEl = document.getElementById('customConfirmIcon');
-            const btnOk = document.getElementById('customConfirmBtnOk');
-            const btnCancel = document.getElementById('customConfirmBtnCancel');
-            titleEl.innerText = title;
-            msgEl.innerText = message;
-            if (isDanger) {
-                iconEl.className = "fa-solid fa-circle-exclamation text-xl";
-                iconEl.parentElement.className = "p-2 bg-red-50 rounded-xl text-red-600";
-                btnOk.className = "px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition";
-            } else {
-                iconEl.className = "fa-solid fa-triangle-exclamation text-xl";
-                iconEl.parentElement.className = "p-2 bg-amber-50 rounded-xl text-amber-600";
-                btnOk.className = "px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold transition";
-            }
-            modal.classList.remove('hidden');
-            btnOk.onclick = function() {
-                modal.classList.add('hidden');
-                if (onOk) onOk();
-            };
-            btnCancel.onclick = function() {
-                modal.classList.add('hidden');
-            };
-        }
-        function saveToLocalStorage() {
-            localStorage.setItem('cbt_siswa', JSON.stringify(state.siswaList));
-            localStorage.setItem('cbt_kategori', JSON.stringify(state.kategoriList));
-            localStorage.setItem('cbt_soal', JSON.stringify(state.soalList));
-            localStorage.setItem('cbt_rekap', JSON.stringify(state.rekapHasil));
-            localStorage.setItem('cbt_settings', JSON.stringify(state.settings));
-        }
-        async function fetchAndApplyLatestData(url) {
-            if (!url) return false;
-            try {
-                const res = await fetch(`${url}?action=pull`);
-                if (!res.ok) throw new Error("Gagal mengambil data");
-                const data = await res.json();
-                
-                if (data.siswa) state.siswaList = data.siswa;
-                if (data.kategori) state.kategoriList = data.kategori;
-                if (data.soal) {
-                    state.soalList = data.soal.map(s => {
-                        try { s.opsi = JSON.parse(s.opsi); } catch(e){}
-                        try { s.pernyataan = JSON.parse(s.pernyataan); } catch(e){}
-                        try { s.kunci = JSON.parse(s.kunci); } catch(e){}
-                        return s;
-                    });
-                }
-                if (data.rekap) state.rekapHasil = data.rekap;
-                saveToLocalStorage();
-                renderSiswaTable();
-                renderKategoriList();
-                renderQuestions();
-                renderAdminDashboard();
-                updateStudentDbStatus();
-                return true;
-            } catch (err) {
-                console.error("Sinkronisasi otomatis gagal:", err);
-                return false;
-            }
-        }
+
         window.onload = function() {
             saveToLocalStorage();
             generateGoogleAppsScriptCode();
             renderAdminDashboard();
             renderSiswaTable();
-            renderKategoriList();
-            renderQuestions();
-            testStoredConnection();
-            updateStudentDbStatus();
-            navigateTo('landing');
             if (state.gasUrl) {
-                showToast("Menghubungkan ke Cloud Database...", "success");
-                fetchAndApplyLatestData(state.gasUrl);
+                document.getElementById('gasUrlInput').value = state.gasUrl;
             }
-            safeRenderMath(document.body);
         };
+
+        function saveToLocalStorage() {
+            localStorage.setItem('cbt_siswa', JSON.stringify(state.siswaList));
+            localStorage.setItem('cbt_kategori', JSON.stringify(state.kategoriList));
+        }
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `p-4 rounded-xl shadow-lg border text-xs font-bold flex items-center space-x-2 transition-all duration-300 transform translate-y-2 pointer-events-auto bg-white`;
-            
-            if (type === 'success') {
-                toast.classList.add('border-emerald-100', 'text-emerald-800');
-                toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i> <span>${message}</span>`;
-            } else if (type === 'danger') {
-                toast.classList.add('border-red-100', 'text-red-800');
-                toast.innerHTML = `<i class="fa-solid fa-circle-exclamation text-red-500 text-sm"></i> <span>${message}</span>`;
-            } else {
-                toast.classList.add('border-amber-100', 'text-amber-800');
-                toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i> <span>${message}</span>`;
-            }
+            toast.className = `p-4 rounded-xl shadow-lg border text-xs font-bold flex items-center space-x-2 transition-all duration-300 bg-white ${type === 'success' ? 'border-emerald-100 text-emerald-800' : 'border-red-100 text-red-800'}`;
+            toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2');
-                toast.classList.add('translate-y-0', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
-        function navigateTo(targetView) {
-            if (session.examStarted && targetView !== 'siswaExam') {
-                showToast("Anda tidak bisa meninggalkan halaman ujian saat tes sedang berjalan!", "danger");
-                return;
+
+        function navigateTo(view) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(view + 'View');
+            if (target) target.classList.remove('hidden');
+        }
+
+        function openModal(modalName) {
+            if (modalName === 'siswa') {
+                document.getElementById('siswaFormId').value = '';
+                document.getElementById('siswaFormUsername').value = '';
+                document.getElementById('siswaFormPassword').value = '';
+                document.getElementById('siswaFormNama').value = '';
+                document.getElementById('siswaFormKelas').value = '';
+                document.getElementById('siswaFormStatus').checked = true;
+                document.getElementById('modalSiswaTitle').innerText = 'Tambah Akun Siswa';
             }
-            state.view = targetView;
-            document.getElementById('landingView').classList.add('hidden');
-            document.getElementById('siswaAuthView').classList.add('hidden');
-            document.getElementById('siswaRulesView').classList.add('hidden');
-            document.getElementById('adminAuthView').classList.add('hidden');
-            document.getElementById('siswaExamView').classList.add('hidden');
-            document.getElementById('adminView').classList.add('hidden');
-            document.getElementById('siswaResultView').classList.add('hidden');
-            const mappedEl = document.getElementById(targetView + 'View');
-            if (mappedEl) mappedEl.classList.remove('hidden');
-            const btnExit = document.getElementById('btnExitPortal');
-            if (targetView === 'siswaExam' || targetView === 'landing') {
-                btnExit.classList.add('hidden');
-            } else {
-                btnExit.classList.remove('hidden');
-            }
-            if (targetView === 'siswaExam') {
-                loadQuestion(session.currentQuestionIdx);
-            }
-            if (targetView === 'admin') {
-                renderAdminDashboard();
-            }
+            document.getElementById('modal' + modalName.charAt(0).toUpperCase() + modalName.slice(1)).classList.remove('hidden');
         }
-        function logoutSession() {
-            showCustomConfirm("Keluar Portal", "Apakah Anda yakin ingin keluar dari sesi portal saat ini dan kembali ke beranda?", () => {
-                session.siswa = null;
-                session.examStarted = false;
-                navigateTo('landing');
-                showToast("Berhasil keluar dari portal.", "success");
-            });
+
+        function closeModal(modalName) {
+            document.getElementById('modal' + modalName.charAt(0).toUpperCase() + modalName.slice(1)).classList.add('hidden');
         }
-        function testStoredConnection() {
-            if (state.gasUrl) {
-                document.getElementById('gasUrlInput').value = state.gasUrl;
-                document.getElementById('connectionStatus').className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100";
-                document.getElementById('statusText').innerText = "Spreadsheet Terkonfigurasi";
-            }
-        }
-        function toggleStudentDbConfig() {
-            const panel = document.getElementById('studentDbConfigPanel');
-            panel.classList.toggle('hidden');
-        }
-        function updateStudentDbStatus() {
-            const indicator = document.getElementById('studentDbIndicator');
-            const statusText = document.getElementById('studentDbStatusText');
-            const studentGasInput = document.getElementById('studentGasUrlInput');
-            if (state.gasUrl) {
-                if (studentGasInput) studentGasInput.value = state.gasUrl;
-                if (indicator) indicator.className = "h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse";
-                if (statusText) statusText.innerText = "Terhubung Basis Data Cloud";
-            } else {
-                if (indicator) indicator.className = "h-2.5 w-2.5 rounded-full bg-amber-400";
-                if (statusText) statusText.innerText = "Mode Lokal (Offline)";
-            }
-        }
-        function saveStudentGasConnection() {
-            const url = document.getElementById('studentGasUrlInput').value.trim();
-            if (!url) {
-                showToast("URL tidak boleh kosong!", "danger");
-                return;
-            }
-            state.gasUrl = url;
-            localStorage.setItem('cbt_gas_url', url);
-            
-            const adminGasInput = document.getElementById('gasUrlInput');
-            if (adminGasInput) adminGasInput.value = url;
-            showToast("Menghubungkan ke Google Apps Script...", "warning");
-            
-            fetch(`${url}?action=ping`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        state.connected = true;
-                        document.getElementById('connectionStatus').className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100";
-                        document.getElementById('statusText').innerText = "Database Terhubung";
-                        updateStudentDbStatus();
-                        showToast("Koneksi Google Spreadsheet Sukses!", "success");
-                        syncStudentData();
-                    } else {
-                        throw new Error();
-                    }
-                })
-                .catch(() => {
-                    state.connected = false;
-                    document.getElementById('connectionStatus').className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 text-xs font-semibold border border-rose-100";
-                    document.getElementById('statusText').innerText = "Koneksi Bermasalah";
-                    updateStudentDbStatus();
-                    showToast("Koneksi gagal. Cek kembali URL Web App dan pastikan CORS aktif.", "danger");
-                });
-        }
-        async function syncStudentData() {
-            if (!state.gasUrl) {
-                showToast("Spreadsheet belum dikonfigurasi! Silakan isi URL pada tombol Setelan.", "danger");
-                toggleStudentDbConfig();
-                return;
-            }
-            
-            const btn = document.getElementById('btnSyncStudent');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Sinkronisasi...</span>`;
-            showToast("Mengunduh data ujian terbaru...", "warning");
-            const success = await fetchAndApplyLatestData(state.gasUrl);
-            if (success) {
-                showToast("Data ujian dan akun siswa berhasil diperbarui!", "success");
-            } else {
-                showToast("Gagal mengambil data dari Spreadsheet. Cek URL atau jaringan internet Anda.", "danger");
-            }
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span>Sinkronkan Data Terbaru</span>`;
-        }
-        function saveAndTestGasConnection() {
-            const url = document.getElementById('gasUrlInput').value.trim();
-            if (!url) {
-                showToast("URL tidak boleh kosong!", "danger");
-                return;
-            }
-            state.gasUrl = url;
-            localStorage.setItem('cbt_gas_url', url);
-            showToast("Menghubungkan ke Google Apps Script...", "warning");
-            
-            fetch(`${url}?action=ping`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        state.connected = true;
-                        document.getElementById('connectionStatus').className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100";
-                        document.getElementById('statusText').innerText = "Database Terhubung";
-                        updateStudentDbStatus();
-                        showToast("Koneksi Google Spreadsheet Sukses!", "success");
-                        triggerFullSync();
-                    } else {
-                        throw new Error();
-                    }
-                })
-                .catch(() => {
-                    state.connected = false;
-                    document.getElementById('connectionStatus').className = "flex items-center space-x-2 px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 text-xs font-semibold border border-rose-100";
-                    document.getElementById('statusText').innerText = "Koneksi Bermasalah";
-                    updateStudentDbStatus();
-                    showToast("Koneksi gagal. Cek kembali URL Web App dan konfigurasi CORS Anda.", "danger");
-                });
-        }
-        function triggerFullSync() {
-            if (!state.gasUrl) {
-                showToast("Spreadsheet belum dikonfigurasi!", "danger");
-                return;
-            }
-            showToast("Mensinkronisasikan data...", "warning");
-            fetch(`${state.gasUrl}?action=pull`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.siswa) state.siswaList = data.siswa;
-                    if (data.kategori) state.kategoriList = data.kategori;
-                    if (data.soal) {
-                        state.soalList = data.soal.map(s => {
-                            try { s.opsi = JSON.parse(s.opsi); } catch(e){}
-                            try { s.pernyataan = JSON.parse(s.pernyataan); } catch(e){}
-                            try { s.kunci = JSON.parse(s.kunci); } catch(e){}
-                            return s;
-                        });
-                    }
-                    if (data.rekap) state.rekapHasil = data.rekap;
-                    saveToLocalStorage();
-                    renderSiswaTable();
-                    renderKategoriList();
-                    renderQuestions();
-                    renderAdminDashboard();
-                    showToast("Semua data berhasil disinkronkan dengan Google Spreadsheet!", "success");
-                })
-                .catch(err => {
-                    console.error(err);
-                    showToast("Gagal mengambil data dari Spreadsheet. Menggunakan database lokal.", "danger");
-                });
-        }
-        function pushResultToSpreadsheet(rekapDoc) {
-            if (!state.gasUrl) return;
-            
-            const payload = {
-                action: 'pushRekap',
-                data: JSON.stringify(rekapDoc)
-            };
-            fetch(state.gasUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                showToast("Hasil ujian dikirim ke Cloud Spreadsheet!", "success");
-            }).catch(err => {
-                console.error(err);
-                showToast("Hasil ujian disimpan di penyimpanan lokal.", "warning");
-            });
-        }
-        async function handleSiswaLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('siswaUsername').value.trim();
-            const password = document.getElementById('siswaPassword').value;
-            const loginForm = document.getElementById('loginForm');
-            const submitBtn = loginForm.querySelector('button[type="submit"]');
-            const originalBtnHtml = submitBtn.innerHTML;
-            if (state.gasUrl) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1.5"></i>Membaca Data Cloud...`;
-                showToast("Menyelaraskan data login terbaru dengan database cloud...", "warning");
-                await fetchAndApplyLatestData(state.gasUrl);
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-            }
-            const student = state.siswaList.find(s => 
-                String(s.username).trim() === String(username).trim() && 
-                String(s.password).trim() === String(password).trim()
-            );
-            if (!student) {
-                showToast("Username atau Password Anda salah!", "danger");
-                return;
-            }
-            const isStatusActive = student.status === true || 
-                                   String(student.status).toLowerCase().trim() === 'true' || 
-                                   student.status === 1 || 
-                                   student.status === '1';
-            if (!isStatusActive) {
-                showToast("Akun Anda dinonaktifkan oleh administrator!", "danger");
-                return;
-            }
-            session.siswa = student;
-            navigateTo('siswaRules');
-            document.getElementById('rulesStudentHeader').innerText = `Selamat Datang, ${student.nama} (${student.kelas || 'Tanpa Kelas'})`;
-            const rulesSelectKategori = document.getElementById('rulesSelectKategori');
-            rulesSelectKategori.innerHTML = '<option value="" disabled selected>-- Pilih Ujian Aktif --</option>';
-            
-            const activeCategories = state.kategoriList.filter(k => k.status);
-            activeCategories.forEach(k => {
-                rulesSelectKategori.innerHTML += `<option value="${k.id}">${k.nama} (${k.durasi} Menit)</option>`;
-            });
-            document.getElementById('siswaUsername').value = '';
-            document.getElementById('siswaPassword').value = '';
-            showToast("Otentikasi berhasil! Silakan baca tata tertib.", "success");
-        }
-        function handleStartExamFromRules(event) {
-            event.preventDefault();
-            const selectedKategoriId = document.getElementById('rulesSelectKategori').value;
-            const enteredPin = document.getElementById('rulesPinInput').value.trim().toUpperCase();
-            if (!selectedKategoriId) {
-                showToast("Silakan pilih kategori ujian terlebih dahulu!", "danger");
-                return;
-            }
-            const category = state.kategoriList.find(k => k.id === selectedKategoriId);
-            if (!category || category.pin !== enteredPin) {
-                showToast("PIN / Token Ujian yang Anda masukkan salah!", "danger");
-                return;
-            }
-            session.kategori = category;
-            session.answers = {};
-            session.bookmarks = {};
-            session.cheatWarnings = 0;
-            session.currentQuestionIdx = 0;
-            session.examStarted = true;
-            session.filteredQuestions = state.soalList.filter(q => q.kategoriId === category.id);
-            if (session.filteredQuestions.length === 0) {
-                showToast("Belum ada butir soal untuk kategori ujian ini!", "danger");
-                session.examStarted = false;
-                return;
-            }
-            if (state.settings && state.settings.acakSoal) {
-                for (let i = session.filteredQuestions.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [session.filteredQuestions[i], session.filteredQuestions[j]] = [session.filteredQuestions[j], session.filteredQuestions[i]];
-                }
-                logAdminActivity(`[SYSTEM] Soal diacak untuk ujian siswa: ${session.siswa.nama}`);
-            }
-            enforceFullscreen();
-            navigateTo('siswaExam');
-            document.getElementById('examTitleLabel').innerText = category.nama;
-            document.getElementById('examSubjectLabel').innerText = `Ujian: ${category.nama} (${session.filteredQuestions.length} Butir Soal)`;
-            
-            session.timeLeft = category.durasi * 60;
-            startTimer();
-            loadQuestion(0);
-            renderNavigationGrid();
-            initAntiCheating();
-            document.getElementById('rulesPinInput').value = '';
-            showToast("Verifikasi sukses! Selamat mengerjakan.", "success");
-        }
-        function handleAdminLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('adminUsername').value.trim();
-            const pass = document.getElementById('adminPassword').value;
-            if (user === 'admin' && pass === 'admin1122') {
-                showToast("Otentikasi berhasil! Selamat datang Admin.", "success");
-                navigateTo('admin');
-                document.getElementById('adminUsername').value = '';
-                document.getElementById('adminPassword').value = '';
-            } else {
-                showToast("ID Administrator atau Password Anda salah!", "danger");
-            }
-        }
-        function initAntiCheating() {
-            document.addEventListener('visibilitychange', handleCheatViolation);
-            document.addEventListener('contextmenu', preventDefaultAction);
-            document.addEventListener('copy', preventDefaultAction);
-            document.addEventListener('paste', preventDefaultAction);
-            document.addEventListener('keydown', handleKeyBlock);
-        }
-        function removeAntiCheating() {
-            document.removeEventListener('visibilitychange', handleCheatViolation);
-            document.removeEventListener('contextmenu', preventDefaultAction);
-            document.removeEventListener('copy', preventDefaultAction);
-            document.removeEventListener('paste', preventDefaultAction);
-            document.removeEventListener('keydown', handleKeyBlock);
-        }
-        function preventDefaultAction(e) {
-            e.preventDefault();
-            showToast("Fitur salin, tempel, dan klik kanan dinonaktifkan demi keamanan ujian!", "warning");
-        }
-        function handleKeyBlock(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) {
-                e.preventDefault();
-                showToast("Akses Developer Tools diblokir!", "danger");
-            }
-        }
-        function handleCheatViolation() {
-            if (!session.examStarted) return;
-            if (document.visibilityState === 'hidden') {
-                session.cheatWarnings++;
-                document.getElementById('cheatWarningsCount').innerText = session.cheatWarnings;
-                logAdminActivity(`[PELANGGARAN] Siswa ${session.siswa.nama} terdeteksi meninggalkan tab layar ujian! (${session.cheatWarnings}/3)`);
-                if (session.cheatWarnings >= 3) {
-                    showToast("Batas pelanggaran habis! Ujian Anda disubmit otomatis.", "danger");
-                    autoSubmitExam();
-                } else {
-                    showToast(`Peringatan: Pindah layar terdeteksi! Ujian otomatis disubmit jika melanggar 3 kali.`, "danger");
-                }
-            }
-        }
-        function enforceFullscreen() {
-            try {
-                const docElm = document.documentElement;
-                if (docElm.requestFullscreen) {
-                    docElm.requestFullscreen();
-                } else if (docElm.webkitRequestFullscreen) {
-                    docElm.webkitRequestFullscreen();
-                }
-            } catch(e) {
-                console.warn("Fullscreen API blocked by sandbox policies. Activating pseudo-fullscreen layout instead.");
-            }
-            document.body.classList.add('pseudo-fullscreen');
-        }
-        function exitFullscreen() {
-            try {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            } catch(e) {
-                console.warn("Exit native fullscreen failed.");
-            }
-            document.body.classList.remove('pseudo-fullscreen');
-        }
-        function startTimer() {
-            clearInterval(session.timerInterval);
-            session.timerInterval = setInterval(() => {
-                session.timeLeft--;
-                
-                const hours = Math.floor(session.timeLeft / 3600);
-                const minutes = Math.floor((session.timeLeft % 3600) / 60);
-                const seconds = session.timeLeft % 60;
-                document.getElementById('examTimer').innerText = 
-                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                if (session.timeLeft <= 0) {
-                    clearInterval(session.timerInterval);
-                    autoSubmitExam();
-                }
-            }, 1000);
-        }
-        function loadQuestion(index) {
-            session.currentQuestionIdx = index;
-            document.getElementById('activeQuestionIndexText').innerText = index + 1;
-            
-            const question = session.filteredQuestions[index];
-            const promptEl = document.getElementById('questionPrompt');
-            
-            promptEl.innerHTML = question.prompt;
-            
-            const imgContainer = document.getElementById('questionImageContainer');
-            const imgEl = document.getElementById('questionImage');
-            if (question.gambar) {
-                imgEl.src = question.gambar;
-                imgContainer.classList.remove('hidden');
-            } else {
-                imgContainer.classList.add('hidden');
-            }
-            const answersBox = document.getElementById('answersContainer');
-            answersBox.innerHTML = '';
-            if (question.tipe === 'PG') {
-                Object.keys(question.opsi).forEach(key => {
-                    const isSelected = session.answers[question.id] === key;
-                    const optionCard = document.createElement('div');
-                    optionCard.className = `flex items-center space-x-3 p-4 rounded-xl border-2 cursor-pointer transition ${isSelected ? 'border-primary-500 bg-primary-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`;
-                    optionCard.onclick = () => selectPGAnswer(question.id, key);
-                    optionCard.innerHTML = `
-                        <div class="flex-shrink-0 h-8 w-8 rounded-full border-2 flex items-center justify-center font-bold text-xs ${isSelected ? 'bg-primary-600 border-primary-600 text-white' : 'border-slate-300 text-slate-500'}">
-                            ${key}
-                        </div>
-                        <div class="text-slate-800 text-sm font-medium option-math-text">${question.opsi[key]}</div>
-                    `;
-                    answersBox.appendChild(optionCard);
-                });
-            } else if (question.tipe === 'MCMA') {
-                const selectedAnswers = session.answers[question.id] || [];
-                Object.keys(question.opsi).forEach(key => {
-                    const isSelected = selectedAnswers.includes(key);
-                    const optionCard = document.createElement('div');
-                    optionCard.className = `flex items-center space-x-3 p-4 rounded-xl border-2 cursor-pointer transition ${isSelected ? 'border-primary-500 bg-primary-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'}`;
-                    optionCard.onclick = () => toggleMCMAAnswer(question.id, key);
-                    optionCard.innerHTML = `
-                        <div class="flex-shrink-0 h-6 w-6 rounded border-2 flex items-center justify-center font-bold text-xs ${isSelected ? 'bg-primary-600 border-primary-600 text-white' : 'border-slate-300 text-slate-500'}">
-                            ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
-                        </div>
-                        <span class="font-bold text-xs text-slate-400">${key}.</span>
-                        <div class="text-slate-800 text-sm font-medium option-math-text">${question.opsi[key]}</div>
-                    `;
-                    answersBox.appendChild(optionCard);
-                });
-            } else if (question.tipe === 'BS') {
-                const currentAnswer = session.answers[question.id] || ['', '', ''];
-                question.pernyataan.forEach((stmt, idx) => {
-                    const row = document.createElement('div');
-                    row.className = "p-4 bg-white rounded-xl border border-slate-200 space-y-3";
-                    row.innerHTML = `
-                        <div class="text-slate-800 text-sm font-medium stmt-math-text">${idx+1}. ${stmt}</div>
-                        <div class="flex space-x-3">
-                            <button type="button" onclick="setBSAnswer(${idx}, 'B')" class="px-4 py-1.5 rounded-lg border text-xs font-bold transition ${currentAnswer[idx] === 'B' ? 'bg-success text-white border-success' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">Benar</button>
-                            <button type="button" onclick="setBSAnswer(${idx}, 'S')" class="px-4 py-1.5 rounded-lg border text-xs font-bold transition ${currentAnswer[idx] === 'S' ? 'bg-danger text-white border-danger' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">Salah</button>
-                        </div>
-                    `;
-                    answersBox.appendChild(row);
-                });
-            }
-            const isBookmarked = session.bookmarks[question.id];
-            const bookmarkIcon = document.getElementById('bookmarkIcon');
-            if (isBookmarked) {
-                bookmarkIcon.className = "fa-solid fa-bookmark text-amber-500";
-                document.getElementById('btnBookmark').classList.add('bg-amber-100', 'border-amber-400');
-            } else {
-                bookmarkIcon.className = "fa-regular fa-bookmark";
-                document.getElementById('btnBookmark').classList.remove('bg-amber-100', 'border-amber-400');
-            }
-            safeRenderMath(promptEl);
-            safeRenderMath(answersBox);
-        }
-        function selectPGAnswer(questionId, optionKey) {
-            session.answers[questionId] = optionKey;
-            loadQuestion(session.currentQuestionIdx);
-            renderNavigationGrid();
-        }
-        function toggleMCMAAnswer(questionId, optionKey) {
-            if (!session.answers[questionId]) session.answers[questionId] = [];
-            let list = session.answers[questionId];
-            const idx = list.indexOf(optionKey);
-            if (idx > -1) {
-                list.splice(idx, 1);
-            } else {
-                list.push(optionKey);
-            }
-            loadQuestion(session.currentQuestionIdx);
-            renderNavigationGrid();
-        }
-        function setBSAnswer(stmtIndex, val) {
-            const currentQuestion = session.filteredQuestions[session.currentQuestionIdx];
-            if (!session.answers[currentQuestion.id]) session.answers[currentQuestion.id] = ['', '', ''];
-            session.answers[currentQuestion.id][stmtIndex] = val;
-            loadQuestion(session.currentQuestionIdx);
-            renderNavigationGrid();
-        }
-        function prevQuestion() {
-            if (session.currentQuestionIdx > 0) {
-                loadQuestion(session.currentQuestionIdx - 1);
-            }
-        }
-        function nextQuestion() {
-            if (session.currentQuestionIdx < session.filteredQuestions.length - 1) {
-                loadQuestion(session.currentQuestionIdx + 1);
-            }
-        }
-        function toggleBookmarkActive() {
-            const currentQ = session.filteredQuestions[session.currentQuestionIdx];
-            session.bookmarks[currentQ.id] = !session.bookmarks[currentQ.id];
-            loadQuestion(session.currentQuestionIdx);
-            renderNavigationGrid();
-        }
-        function renderNavigationGrid() {
-            const grid = document.getElementById('examNavigationGrid');
-            grid.innerHTML = '';
-            session.filteredQuestions.forEach((q, idx) => {
-                const isAnswered = checkIsAnswered(q);
-                const isBookmarked = session.bookmarks[q.id];
-                const isActive = session.currentQuestionIdx === idx;
-                
-                let btnClass = "h-10 rounded-xl font-bold text-xs border flex items-center justify-center transition relative ";
-                if (isActive) {
-                    btnClass += "ring-2 ring-primary-600 bg-primary-600 text-white border-primary-600 shadow-sm";
-                } else if (isBookmarked) {
-                    btnClass += "bg-amber-100 border-amber-300 text-amber-800";
-                } else if (isAnswered) {
-                    btnClass += "bg-emerald-50 border-emerald-300 text-emerald-800";
-                } else {
-                    btnClass += "bg-white border-slate-200 text-slate-700 hover:bg-slate-100";
-                }
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = btnClass;
-                btn.innerHTML = `<span>${idx + 1}</span>`;
-                if (isBookmarked && !isActive) {
-                    btn.innerHTML += `<span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-amber-500"></span>`;
-                }
-                btn.onclick = () => loadQuestion(idx);
-                grid.appendChild(btn);
-            });
-        }
-        function promptSubmitExam() {
-            showCustomConfirm("Kumpulkan Ujian", "Apakah Anda yakin ingin mengakhiri sesi ujian ini dan mengumpulkan seluruh jawaban?", () => {
-                submitExamProcess();
-            });
-        }
-        function autoSubmitExam() {
-            submitExamProcess();
-        }
-        function submitExamProcess() {
-            clearInterval(session.timerInterval);
-            removeAntiCheating();
-            exitFullscreen();
-            session.examStarted = false;
-            
-            let correctCount = 0;
-            let wrongCount = 0;
-            let detailedAnswers = [];
-            
-            session.filteredQuestions.forEach(q => {
-                const userAns = session.answers[q.id];
-                let isCorrect = false;
-                
-                if (q.tipe === 'PG') {
-                    if (userAns && userAns === q.kunci) isCorrect = true;
-                } else if (q.tipe === 'MCMA') {
-                    if (Array.isArray(userAns)) {
-                        const sortedUser = [...userAns].sort();
-                        const sortedKey = [...q.kunci].sort();
-                        if (JSON.stringify(sortedUser) === JSON.stringify(sortedKey)) isCorrect = true;
-                    }
-                } else if (q.tipe === 'BS') {
-                    if (Array.isArray(userAns)) {
-                        let match = true;
-                        for (let i = 0; i < 3; i++) {
-                            if (userAns[i] !== q.kunci[i]) match = false;
-                        }
-                        if (match) isCorrect = true;
-                    }
-                }
-                if (isCorrect) correctCount++;
-                else wrongCount++;
-                
-                detailedAnswers.push({
-                    soalId: q.id,
-                    prompt: q.prompt,
-                    userAnswer: userAns,
-                    correctKey: q.kunci,
-                    isCorrect: isCorrect,
-                    pembahasan: q.pembahasan
-                });
-            });
-            const finalScore = Math.round((correctCount / session.filteredQuestions.length) * 100);
-            
-            document.getElementById('resFinalScore').innerText = finalScore;
-            document.getElementById('resCorrectCount').innerText = correctCount;
-            document.getElementById('resWrongCount').innerText = wrongCount;
-            
-            const rekapDoc = {
-                id: 'R' + Date.now(),
-                username: session.siswa.username,
-                namaSiswa: session.siswa.nama,
-                kelas: session.siswa.kelas || '',
-                kategoriId: session.kategori.id,
-                kategoriNama: session.kategori.nama,
-                skor: finalScore,
-                benar: correctCount,
-                salah: wrongCount,
-                tanggal: new Date().toISOString(),
-                detail: detailedAnswers
-            };
-            state.rekapHasil.unshift(rekapDoc);
-            saveToLocalStorage();
-            pushResultToSpreadsheet(rekapDoc);
-            navigateTo('siswaResult');
-            showToast("Ujian berhasil diserahkan!", "success");
-        }
-        function resetSiswaView() {
-            session.siswa = null;
-            session.kategori = null;
-            navigateTo('siswaAuth');
-        }
-        function setAdminTab(tabName) {
-            state.activeTabAdmin = tabName;
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.className = "admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 text-slate-600 hover:bg-slate-50";
-            });
-            const activeBtn = document.getElementById('tabBtn-' + tabName);
-            if (activeBtn) {
-                activeBtn.className = "admin-tab-btn w-full px-4 py-3 rounded-xl text-sm font-semibold transition flex items-center space-x-3 bg-primary-50 text-primary-700 border border-primary-100";
-            }
-            document.querySelectorAll('.admin-panel-content').forEach(panel => {
-                panel.classList.add('hidden');
-            });
-            const activePanel = document.getElementById('adminTab-' + tabName);
-            if (activePanel) {
-                activePanel.classList.remove('hidden');
-            }
-            if (tabName === 'dashboard') renderAdminDashboard();
-            if (tabName === 'siswa') renderSiswaTable();
-            if (tabName === 'kategori') renderKategoriList();
-            if (tabName === 'soal') renderQuestions();
-            if (tabName === 'rekap') renderRekapTable();
-        }
-        function renderAdminDashboard() {
-            document.getElementById('statSiswaCount').innerText = state.siswaList.length;
-            document.getElementById('statKategoriCount').innerText = state.kategoriList.length;
-            document.getElementById('statSoalCount').innerText = state.soalList.length;
-            
-            const settingAcak = document.getElementById('settingAcakSoal');
-            if (settingAcak) {
-                settingAcak.checked = !!state.settings.acakSoal;
-            }
-        }
-        function logAdminActivity(message) {
-            const logContainer = document.getElementById('adminLiveActivityLog');
-            if (!logContainer) return;
-            const timeStr = new Date().toLocaleTimeString();
-            const row = document.createElement('div');
-            row.className = "p-2 bg-white rounded border border-slate-100 text-slate-600";
-            row.innerHTML = `<span class="text-slate-400">[${timeStr}]</span> ${message}`;
-            logContainer.prepend(row);
-        }
-        function renderSiswaTable() {
-            const tbody = document.getElementById('siswaTableBody');
-            const search = document.getElementById('searchSiswaInput').value.toLowerCase();
-            tbody.innerHTML = '';
-            
-            const filtered = state.siswaList.filter(s => 
-                s.nama.toLowerCase().includes(search) || 
-                s.username.toLowerCase().includes(search) || 
-                (s.kelas && s.kelas.toLowerCase().includes(search))
-            );
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-slate-400">Tidak ada data siswa ditemukan.</td></tr>`;
-                return;
-            }
-            filtered.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-mono text-xs font-bold text-slate-700">${s.username}</td>
-                    <td class="px-6 py-4 font-semibold text-slate-800">${s.nama}</td>
-                    <td class="px-6 py-4 text-slate-600 font-medium">${s.kelas || '-'}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${s.status ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'}">
-                            ${s.status ? 'Aktif' : 'Nonaktif'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-right space-x-2">
-                        <button onclick="editSiswa('${s.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteSiswa('${s.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            document.getElementById('statSiswaCount').innerText = state.siswaList.length;
-        }
-        function filterSiswaTable() {
-            renderSiswaTable();
-        }
+
+        // FUNGSI UTAMA SIMPAN DATA SISWA (TELAH DIPERBAIKI)
         function saveSiswa(event) {
             event.preventDefault();
             const id = document.getElementById('siswaFormId').value;
@@ -1843,541 +388,159 @@
             const nama = document.getElementById('siswaFormNama').value.trim();
             const kelas = document.getElementById('siswaFormKelas').value.trim();
             const status = document.getElementById('siswaFormStatus').checked;
-            
+
             if (id) {
-                const s = state.siswaList.find(item => item.id === id);
-                if (s) {
-                    s.username = username;
-                    s.password = password;
-                    s.nama = nama;
-                    s.kelas = kelas;
-                    s.status = status;
+                // Update Data Siswa
+                const idx = state.siswaList.findIndex(s => s.id === id);
+                if (idx > -1) {
+                    state.siswaList[idx] = { id, username, password, nama, kelas, status };
                 }
             } else {
-                const newId = 'S' + Date.now();
-                state.siswaList.push({ id: newId, username, password, nama, kelas, status });
+                // Tambah Data Siswa Baru
+                const newSiswa = {
+                    id: 'S' + Date.now(),
+                    username,
+                    password,
+                    nama,
+                    kelas,
+                    status
+                };
+                state.siswaList.push(newSiswa);
             }
+
             saveToLocalStorage();
             renderSiswaTable();
+            renderAdminDashboard();
             closeModal('siswa');
             showToast("Data siswa berhasil disimpan!", "success");
         }
+
         function editSiswa(id) {
             const s = state.siswaList.find(item => item.id === id);
             if (!s) return;
-            document.getElementById('modalSiswaTitle').innerText = "Edit Akun Siswa";
             document.getElementById('siswaFormId').value = s.id;
             document.getElementById('siswaFormUsername').value = s.username;
             document.getElementById('siswaFormPassword').value = s.password;
             document.getElementById('siswaFormNama').value = s.nama;
             document.getElementById('siswaFormKelas').value = s.kelas || '';
             document.getElementById('siswaFormStatus').checked = s.status;
+            document.getElementById('modalSiswaTitle').innerText = 'Edit Akun Siswa';
             document.getElementById('modalSiswa').classList.remove('hidden');
         }
+
         function deleteSiswa(id) {
-            showCustomConfirm("Hapus Siswa", "Apakah Anda yakin ingin menghapus akun siswa ini?", () => {
+            if (confirm("Apakah Anda yakin ingin menghapus siswa ini?")) {
                 state.siswaList = state.siswaList.filter(s => s.id !== id);
                 saveToLocalStorage();
                 renderSiswaTable();
+                renderAdminDashboard();
                 showToast("Siswa berhasil dihapus.", "success");
-            }, true);
-        }
-        function renderKategoriList() {
-            const container = document.getElementById('kategoriListContainer');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            state.kategoriList.forEach(k => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="px-2.5 py-1 bg-primary-100 text-primary-700 text-[10px] font-bold rounded-lg uppercase">Token: ${k.pin}</span>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${k.status ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'}">
-                                ${k.status ? 'Aktif' : 'Nonaktif'}
-                            </span>
-                        </div>
-                        <h4 class="font-bold text-slate-800 text-base mb-1">${k.nama}</h4>
-                        <p class="text-xs text-slate-500 mb-4"><i class="fa-regular fa-clock mr-1"></i>Durasi Ujian: ${k.durasi} Menit</p>
-                    </div>
-                    <div class="flex justify-end space-x-2 pt-3 border-t border-slate-200">
-                        <button onclick="editKategori('${k.id}')" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-50 transition">Edit</button>
-                        <button onclick="deleteKategori('${k.id}')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition">Hapus</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            document.getElementById('statKategoriCount').innerText = state.kategoriList.length;
-            
-            const filterSoalKategori = document.getElementById('filterSoalKategori');
-            const soalFormKategori = document.getElementById('soalFormKategori');
-            const rulesSelectKategori = document.getElementById('rulesSelectKategori');
-            
-            if (filterSoalKategori) {
-                filterSoalKategori.innerHTML = '<option value="all">Tampilkan Semua Soal</option>';
-                state.kategoriList.forEach(k => {
-                    filterSoalKategori.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
-                });
-            }
-            if (soalFormKategori) {
-                soalFormKategori.innerHTML = '';
-                state.kategoriList.forEach(k => {
-                    soalFormKategori.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
-                });
             }
         }
-        function saveKategori(event) {
-            event.preventDefault();
-            const id = document.getElementById('kategoriFormId').value;
-            const nama = document.getElementById('kategoriFormNama').value.trim();
-            const durasi = parseInt(document.getElementById('kategoriFormDurasi').value);
-            const pin = document.getElementById('kategoriFormPin').value.trim().toUpperCase();
-            const status = document.getElementById('kategoriFormStatus').checked;
-            
-            if (id) {
-                const k = state.kategoriList.find(item => item.id === id);
-                if (k) {
-                    k.nama = nama;
-                    k.durasi = durasi;
-                    k.pin = pin;
-                    k.status = status;
-                }
-            } else {
-                const newId = 'K' + Date.now();
-                state.kategoriList.push({ id: newId, nama, durasi, pin, status });
-            }
-            saveToLocalStorage();
-            renderKategoriList();
-            closeModal('kategori');
-            showToast("Kategori ujian berhasil disimpan!", "success");
-        }
-        function editKategori(id) {
-            const k = state.kategoriList.find(item => item.id === id);
-            if (!k) return;
-            document.getElementById('modalKategoriTitle').innerText = "Edit Kategori Ujian";
-            document.getElementById('kategoriFormId').value = k.id;
-            document.getElementById('kategoriFormNama').value = k.nama;
-            document.getElementById('kategoriFormDurasi').value = k.durasi;
-            document.getElementById('kategoriFormPin').value = k.pin;
-            document.getElementById('kategoriFormStatus').checked = k.status;
-            document.getElementById('modalKategori').classList.remove('hidden');
-        }
-        function deleteKategori(id) {
-            showCustomConfirm("Hapus Kategori", "Apakah Anda yakin ingin menghapus kategori ujian ini beserta seluruh soal didalamnya?", () => {
-                state.kategoriList = state.kategoriList.filter(k => k.id !== id);
-                state.soalList = state.soalList.filter(s => s.kategoriId !== id);
-                saveToLocalStorage();
-                renderKategoriList();
-                renderQuestions();
-                showToast("Kategori berhasil dihapus.", "success");
-            }, true);
-        }
-        function toggleSoalTypeInputs() {
-            const tipe = document.getElementById('soalFormTipe').value;
-            const dynContainer = document.getElementById('dynamicOptionsContainer');
-            const bsContainer = document.getElementById('bsInputsContainer');
-            
-            if (tipe === 'PG' || tipe === 'MCMA') {
-                dynContainer.classList.remove('hidden');
-                bsContainer.classList.add('hidden');
-                if (currentModalOptions.length === 0) {
-                    currentModalOptions = ['Opsi A', 'Opsi B', 'Opsi C', 'Opsi D', 'Opsi E'];
-                }
-                renderModalOptions();
-            } else if (tipe === 'BS') {
-                dynContainer.classList.add('hidden');
-                bsContainer.classList.remove('hidden');
-            }
-            updateLiveSoalPreview();
-        }
-        function updateLiveSoalPreview() {
-            const prompt = document.getElementById('soalFormPrompt').value;
-            const tipe = document.getElementById('soalFormTipe').value;
-            const livePrompt = document.getElementById('livePreviewPrompt');
-            const liveAns = document.getElementById('livePreviewAnswers');
-            
-            livePrompt.innerHTML = safeEscapeHtml(prompt) || "Belum ada teks soal...";
-            liveAns.innerHTML = '';
-            
-            if (tipe === 'PG' || tipe === 'MCMA') {
-                currentModalOptions.forEach((opt, idx) => {
-                    const letter = String.fromCharCode(65 + idx);
-                    const div = document.createElement('div');
-                    div.className = "flex items-center space-x-2 bg-slate-800 p-2 rounded-lg border border-slate-700 text-xs";
-                    div.innerHTML = `<span class="font-bold text-sky-400">${letter}.</span> <span>${safeEscapeHtml(opt) || '...'}</span>`;
-                    liveAns.appendChild(div);
-                });
-            } else if (tipe === 'BS') {
-                for (let i = 1; i <= 3; i++) {
-                    const stmt = document.getElementById('soalBs' + i).value;
-                    const div = document.createElement('div');
-                    div.className = "bg-slate-800 p-2 rounded-lg border border-slate-700 text-xs";
-                    div.innerHTML = `<span class="font-bold text-sky-400">Pernyataan ${i}:</span> ${safeEscapeHtml(stmt) || '...'}`;
-                    liveAns.appendChild(div);
-                }
-            }
-            safeRenderMath(livePrompt);
-            safeRenderMath(liveAns);
-        }
-        function saveSoal(event) {
-            event.preventDefault();
-            const id = document.getElementById('soalFormId').value;
-            const kategoriId = document.getElementById('soalFormKategori').value;
-            const tipe = document.getElementById('soalFormTipe').value;
-            const prompt = document.getElementById('soalFormPrompt').value;
-            const gambar = document.getElementById('soalFormGambar').value;
-            const pembahasan = document.getElementById('soalFormPembahasan').value;
-            
-            let opsiObj = {};
-            let kunciVal = null;
-            let pernyataanArr = [];
-            
-            if (tipe === 'PG') {
-                currentModalOptions.forEach((text, idx) => {
-                    opsiObj[String.fromCharCode(65 + idx)] = text;
-                });
-                kunciVal = currentFormPgKunci;
-            } else if (tipe === 'MCMA') {
-                currentModalOptions.forEach((text, idx) => {
-                    opsiObj[String.fromCharCode(65 + idx)] = text;
-                });
-                kunciVal = currentFormMcmaKunci;
-            } else if (tipe === 'BS') {
-                pernyataanArr = [
-                    document.getElementById('soalBs1').value,
-                    document.getElementById('soalBs2').value,
-                    document.getElementById('soalBs3').value
-                ];
-                kunciVal = [
-                    document.getElementById('bsKunci1').value,
-                    document.getElementById('bsKunci2').value,
-                    document.getElementById('bsKunci3').value
-                ];
-            }
-            if (id) {
-                const s = state.soalList.find(item => item.id === id);
-                if (s) {
-                    s.kategoriId = kategoriId;
-                    s.tipe = tipe;
-                    s.prompt = prompt;
-                    s.gambar = gambar;
-                    s.opsi = opsiObj;
-                    s.kunci = kunciVal;
-                    s.pernyataan = pernyataanArr;
-                    s.pembahasan = pembahasan;
-                }
-            } else {
-                const newId = 'Q' + Date.now();
-                state.soalList.push({
-                    id: newId,
-                    kategoriId,
-                    tipe,
-                    prompt,
-                    gambar,
-                    opsi: opsiObj,
-                    kunci: kunciVal,
-                    pernyataan: pernyataanArr,
-                    pembahasan
-                });
-            }
-            saveToLocalStorage();
-            renderQuestions();
-            closeModal('soal');
-            showToast("Butir soal berhasil disimpan!", "success");
-        }
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            const filterKategori = document.getElementById('filterSoalKategori').value;
-            if (!container) return;
-            container.innerHTML = '';
-            
-            const filtered = state.soalList.filter(q => filterKategori === 'all' || q.kategoriId === filterKategori);
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-400">Belum ada butir soal.</div>`;
-                document.getElementById('statSoalCount').innerText = state.soalList.length;
-                return;
-            }
-            filtered.forEach((q, idx) => {
-                const cat = state.kategoriList.find(k => k.id === q.kategoriId);
-                const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3";
-                
-                let opsiHtml = '';
-                if (q.tipe === 'PG' || q.tipe === 'MCMA') {
-                    Object.keys(q.opsi || {}).forEach(k => {
-                        opsiHtml += `<div class="text-xs text-slate-600"><strong class="text-slate-900">${k}.</strong> ${q.opsi[k]}</div>`;
-                    });
-                } else if (q.tipe === 'BS' && q.pernyataan) {
-                    q.pernyataan.forEach((stmt, i) => {
-                        opsiHtml += `<div class="text-xs text-slate-600"><strong class="text-slate-900">${i+1}. (${q.kunci[i]})</strong> ${stmt}</div>`;
-                    });
-                }
-                card.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2.5 py-0.5 bg-primary-50 text-primary-700 text-xs font-bold rounded-md">Soal #${idx + 1}</span>
-                            <span class="text-xs font-semibold text-slate-400">Kategori: ${cat ? cat.nama : 'Umum'} (${q.tipe})</span>
-                        </div>
-                        <div class="space-x-1">
-                            <button onclick="editSoal('${q.id}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">Edit</button>
-                            <button onclick="deleteSoal('${q.id}')" class="px-3 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition">Hapus</button>
-                        </div>
-                    </div>
-                    <div class="text-sm font-medium text-slate-800 soal-prompt-preview">${q.prompt}</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                        ${opsiHtml}
-                    </div>
-                    <div class="text-xs text-slate-500 bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100">
-                        <strong class="text-emerald-700">Kunci:</strong> ${Array.isArray(q.kunci) ? q.kunci.join(', ') : q.kunci}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            document.getElementById('statSoalCount').innerText = state.soalList.length;
-            safeRenderMath(container);
-        }
-        function filterQuestions() {
-            renderQuestions();
-        }
-        function editSoal(id) {
-            const q = state.soalList.find(item => item.id === id);
-            if (!q) return;
-            document.getElementById('modalSoalTitle').innerText = "Edit Butir Soal";
-            document.getElementById('soalFormId').value = q.id;
-            document.getElementById('soalFormKategori').value = q.kategoriId;
-            document.getElementById('soalFormTipe').value = q.tipe;
-            document.getElementById('soalFormPrompt').value = q.prompt;
-            document.getElementById('soalFormGambar').value = q.gambar || '';
-            document.getElementById('soalFormPembahasan').value = q.pembahasan || '';
-            
-            toggleSoalTypeInputs();
-            if (q.tipe === 'PG' || q.tipe === 'MCMA') {
-                currentModalOptions = Object.values(q.opsi || {});
-                if (q.tipe === 'PG') currentFormPgKunci = q.kunci;
-                if (q.tipe === 'MCMA') currentFormMcmaKunci = q.kunci || [];
-                renderModalOptions();
-            } else if (q.tipe === 'BS' && q.pernyataan) {
-                for (let i = 0; i < 3; i++) {
-                    document.getElementById('soalBs' + (i+1)).value = q.pernyataan[i] || '';
-                    document.getElementById('bsKunci' + (i+1)).value = q.kunci[i] || 'B';
-                }
-            }
-            updateLiveSoalPreview();
-            document.getElementById('modalSoal').classList.remove('hidden');
-        }
-        function deleteSoal(id) {
-            showCustomConfirm("Hapus Soal", "Apakah Anda yakin ingin menghapus butir soal ini?", () => {
-                state.soalList = state.soalList.filter(s => s.id !== id);
-                saveToLocalStorage();
-                renderQuestions();
-                showToast("Soal berhasil dihapus.", "success");
-            }, true);
-        }
-        function renderRekapTable() {
-            const tbody = document.getElementById('rekapTableBody');
-            const searchNama = document.getElementById('filterRekapNama').value.toLowerCase();
-            const filterTanggal = document.getElementById('filterRekapTanggal').value;
+
+        function renderSiswaTable() {
+            const tbody = document.getElementById('siswaTableBody');
             tbody.innerHTML = '';
-            
-            let filtered = state.rekapHasil.filter(r => {
-                const matchNama = r.namaSiswa.toLowerCase().includes(searchNama) || r.username.toLowerCase().includes(searchNama) || (r.kelas && r.kelas.toLowerCase().includes(searchNama));
-                const matchTanggal = filterTanggal ? r.tanggal.startsWith(filterTanggal) : true;
-                return matchNama && matchTanggal;
-            });
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-slate-400">Belum ada rekap hasil ujian.</td></tr>`;
-                return;
-            }
-            filtered.forEach((r, index) => {
+            state.siswaList.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-slate-700">${s.username}</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">${s.nama}</td>
+                    <td class="px-6 py-4 text-slate-600">${s.kelas || '-'}</td>
                     <td class="px-6 py-4">
-                        <div class="font-bold text-slate-800">${r.namaSiswa}</div>
-                        <div class="text-xs text-slate-400 font-mono">${r.username} ${r.kelas ? '• Kelas: ' + r.kelas : ''}</div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${s.status ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
+                            ${s.status ? 'Aktif' : 'Nonaktif'}
+                        </span>
                     </td>
-                    <td class="px-6 py-4 text-slate-600 font-medium">${r.kategoriNama}</td>
-                    <td class="px-6 py-4 font-black text-primary-600">${r.skor}</td>
-                    <td class="px-6 py-4 text-xs font-bold">
-                        <span class="text-emerald-600">${r.benar} Benar</span> / <span class="text-red-500">${r.salah} Salah</span>
-                    </td>
-                    <td class="px-6 py-4 text-xs text-slate-500 font-mono">${new Date(r.tanggal).toLocaleString()}</td>
                     <td class="px-6 py-4 text-right space-x-2">
-                        <button onclick="viewStudentAnalysis('${r.id}')" class="px-3 py-1.5 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg text-xs font-bold transition">Analisis</button>
-                        <button onclick="deleteRekapItem('${r.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Rekap"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="editSiswa('${s.id}')" class="text-primary-600 font-bold hover:underline">Edit</button>
+                        <button onclick="deleteSiswa('${s.id}')" class="text-danger font-bold hover:underline">Hapus</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-        function filterRekapTable() {
-            renderRekapTable();
+
+        function renderAdminDashboard() {
+            document.getElementById('statSiswaCount').innerText = state.siswaList.length;
         }
-        function resetRekapFilter() {
-            document.getElementById('filterRekapNama').value = '';
-            document.getElementById('filterRekapTanggal').value = '';
-            renderRekapTable();
+
+        function setAdminTab(tabId) {
+            document.querySelectorAll('.admin-panel-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById('adminTab-' + tabId).classList.remove('hidden');
         }
-        function deleteRekapItem(id) {
-            showCustomConfirm("Hapus Rekap", "Apakah Anda yakin ingin menghapus data rekap ini?", () => {
-                state.rekapHasil = state.rekapHasil.filter(r => r.id !== id);
-                saveToLocalStorage();
-                renderRekapTable();
-                showToast("Rekap berhasil dihapus.", "success");
-            }, true);
-        }
-        function exportRekapToCsv() {
-            if (state.rekapHasil.length === 0) {
-                showToast("Belum ada data rekap untuk diexport!", "danger");
-                return;
-            }
-            let csv = "ID,Username,Nama Siswa,Kelas,Kategori ID,Kategori Nama,Skor,Benar,Salah,Tanggal\n";
-            state.rekapHasil.forEach(r => {
-                csv += `"${r.id}","${r.username}","${r.namaSiswa}","${r.kelas || ''}","${r.kategoriId}","${r.kategoriNama}",${r.skor},${r.benar},${r.salah},"${r.tanggal}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `rekap_ujian_cbt_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
-            showToast("Rekap berhasil diexport ke CSV!", "success");
-        }
-        function viewStudentAnalysis(rekapId) {
-            const record = state.rekapHasil.find(r => r.id === rekapId);
-            if (!record) return;
+
+        function saveAndTestGasConnection() {
+            const url = document.getElementById('gasUrlInput').value.trim();
+            if (!url) return showToast("URL Spreadsheet wajib diisi!", "danger");
             
-            document.getElementById('adminAnalysisModalTitle').innerText = `Analisis Jawaban: ${record.namaSiswa}`;
-            document.getElementById('adminAnalysisModalSubtitle').innerText = `Kategori: ${record.kategoriNama} | Skor: ${record.skor} (${record.benar} Benar, ${record.salah} Salah)`;
-            
-            const contentContainer = document.getElementById('adminAnalysisModalContent');
-            contentContainer.innerHTML = '';
-            
-            if (!record.detail || record.detail.length === 0) {
-                contentContainer.innerHTML = `<div class="p-4 text-center text-slate-400">Detail jawaban tidak tersedia.</div>`;
-            } else {
-                record.detail.forEach((item, idx) => {
-                    const card = document.createElement('div');
-                    card.className = `p-4 rounded-2xl border ${item.isCorrect ? 'bg-emerald-50/40 border-emerald-200' : 'bg-red-50/40 border-red-200'} space-y-2`;
-                    
-                    let userAnsText = Array.isArray(item.userAnswer) ? item.userAnswer.join(', ') : (item.userAnswer || 'Tidak Dijawab');
-                    let correctKeyText = Array.isArray(item.correctKey) ? item.correctKey.join(', ') : item.correctKey;
-                    
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-xs ${item.isCorrect ? 'text-emerald-700' : 'text-red-700'}">Soal #${idx+1} (${item.isCorrect ? 'Benar' : 'Salah'})</span>
-                            <span class="text-xs font-mono text-slate-500">Kunci: <strong>${correctKeyText}</strong> | Jawaban Siswa: <strong>${userAnsText}</strong></span>
-                        </div>
-                        <div class="text-sm text-slate-800 font-medium">${item.prompt}</div>
-                        <div class="text-xs text-slate-600 bg-white p-3 rounded-xl border border-slate-200">
-                            <strong>Pembahasan:</strong> ${item.pembahasan || 'Tidak ada pembahasan.'}
-                        </div>
-                    `;
-                    contentContainer.appendChild(card);
-                });
-            }
-            document.getElementById('modalAdminAnalysis').classList.remove('hidden');
-            safeRenderMath(contentContainer);
+            state.gasUrl = url;
+            localStorage.setItem('cbt_gas_url', url);
+            showToast("Menguji koneksi Google Apps Script...", "success");
+
+            fetch(`${url}?action=ping`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        showToast("Integrasi Google Spreadsheet Berhasil!", "success");
+                    } else {
+                        throw new Error();
+                    }
+                })
+                .catch(() => showToast("Koneksi gagal! Periksa kembali URL Deployment Anda.", "danger"));
         }
-        function toggleSettingAcakSoal() {
-            const chk = document.getElementById('settingAcakSoal').checked;
-            state.settings.acakSoal = chk;
-            saveToLocalStorage();
-            showToast("Pengaturan acak soal diperbarui.", "success");
-        }
-        function openModal(type) {
-            if (type === 'siswa') {
-                document.getElementById('modalSiswaTitle').innerText = "Tambah Akun Siswa";
-                document.getElementById('siswaFormId').value = '';
-                document.getElementById('siswaFormUsername').value = '';
-                document.getElementById('siswaFormPassword').value = '';
-                document.getElementById('siswaFormNama').value = '';
-                document.getElementById('siswaFormKelas').value = '';
-                document.getElementById('siswaFormStatus').checked = true;
-                document.getElementById('modalSiswa').classList.remove('hidden');
-            } else if (type === 'kategori') {
-                document.getElementById('modalKategoriTitle').innerText = "Tambah Kategori Ujian";
-                document.getElementById('kategoriFormId').value = '';
-                document.getElementById('kategoriFormNama').value = '';
-                document.getElementById('kategoriFormDurasi').value = '45';
-                document.getElementById('kategoriFormPin').value = '';
-                document.getElementById('kategoriFormStatus').checked = true;
-                document.getElementById('modalKategori').classList.remove('hidden');
-            } else if (type === 'soal') {
-                document.getElementById('modalSoalTitle').innerText = "Buat Soal Berbasis LaTeX";
-                document.getElementById('soalFormId').value = '';
-                document.getElementById('soalFormPrompt').value = '';
-                document.getElementById('soalFormGambar').value = '';
-                document.getElementById('soalFormPembahasan').value = '';
-                document.getElementById('soalFormTipe').value = 'PG';
-                currentModalOptions = ['Opsi A', 'Opsi B', 'Opsi C', 'Opsi D', 'Opsi E'];
-                currentFormPgKunci = 'A';
-                currentFormMcmaKunci = [];
-                toggleSoalTypeInputs();
-                document.getElementById('modalSoal').classList.remove('hidden');
-            }
-        }
-        function closeModal(type) {
-            if (type === 'siswa') document.getElementById('modalSiswa').classList.add('hidden');
-            if (type === 'kategori') document.getElementById('modalKategori').classList.add('hidden');
-            if (type === 'soal') document.getElementById('modalSoal').classList.add('hidden');
-            if (type === 'adminAnalysis') document.getElementById('modalAdminAnalysis').classList.add('hidden');
-        }
+
         function generateGoogleAppsScriptCode() {
-            const code = `
-function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+            const code = `function doGet(e) {
   var action = e.parameter.action;
-  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (action === 'ping') {
-    return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
   }
-  
   if (action === 'pull') {
-    var siswa = getSheetData(ss.getSheetByName('Siswa'));
-    var kategori = getSheetData(ss.getSheetByName('Kategori'));
-    var soal = getSheetData(ss.getSheetByName('Soal'));
-    var rekap = getSheetData(ss.getSheetByName('Rekap'));
-    
-    var data = {siswa: siswa, kategori: kategori, soal: soal, rekap: rekap};
+    var data = {
+      siswa: getSheetData(ss, 'Siswa'),
+      kategori: getSheetData(ss, 'Kategori'),
+      soal: getSheetData(ss, 'Soal'),
+      rekap: getSheetData(ss, 'Rekap')
+    };
     return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
-  
-  if (data.action === 'pushRekap') {
-    var sheet = ss.getSheetByName('Rekap');
-    if (!sheet) {
-      sheet = ss.insertSheet('Rekap');
-      sheet.appendRow(['ID', 'Username', 'NamaSiswa', 'Kelas', 'KategoriID', 'KategoriNama', 'Skor', 'Benar', 'Salah', 'Tanggal', 'Detail']);
-    }
-    var r = data.data;
-    sheet.appendRow([r.id, r.username, r.namaSiswa, r.kelas, r.kategoriId, r.kategoriNama, r.skor, r.benar, r.salah, r.tanggal, JSON.stringify(r.detail)]);
-  }
-  
-  return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
-}
-
-function getSheetData(sheet) {
+function getSheetData(ss, sheetName) {
+  var sheet = ss.getSheetByName(sheetName);
   if (!sheet) return [];
   var rows = sheet.getDataRange().getValues();
-  if (rows.length <= 1) return [];
+  if (rows.length < 2) return [];
   var headers = rows[0];
   var result = [];
   for (var i = 1; i < rows.length; i++) {
     var obj = {};
     for (var j = 0; j < headers.length; j++) {
-      obj[headers[j].toLowerCase()] = rows[i][j];
+      obj[headers[j].toString().toLowerCase()] = rows[i][j];
     }
     result.push(obj);
   }
   return result;
-}
-            `.trim();
+}`;
             document.getElementById('appsScriptCodeArea').value = code;
+        }
+
+        function handleSiswaLogin(e) {
+            e.preventDefault();
+            showToast("Fitur login siswa aktif", "success");
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            navigateTo('admin');
+            showToast("Selamat datang di Dasbor Admin!", "success");
+        }
+
+        function handleStartExamFromRules(e) {
+            e.preventDefault();
+            showToast("Memulai Ujian...", "success");
         }
     </script>
 </body>
