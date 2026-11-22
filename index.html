@@ -192,10 +192,6 @@
                         <span>Daftar Akun Siswa Baru</span>
                     </button>
                 </div>
-
-                <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 text-center">
-                    <span class="font-bold text-slate-700">Akun Demo:</span> Username <code class="bg-white px-1.5 py-0.5 rounded border">CBT-2026-001</code> &bull; Sandi <code class="bg-white px-1.5 py-0.5 rounded border">123</code>
-                </div>
             </div>
         </section>
 
@@ -417,9 +413,6 @@
                     </div>
                     <button type="submit" class="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-lg transition">Otentikasi Dasbor</button>
                 </form>
-                <div class="mt-5 p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 text-center">
-                    <span class="font-bold text-slate-700">Default Admin:</span> <code class="bg-white px-1.5 py-0.5 rounded border">admin</code> &bull; Sandi <code class="bg-white px-1.5 py-0.5 rounded border">admin123</code>
-                </div>
             </div>
         </section>
 
@@ -1201,11 +1194,13 @@
             return token;
         }
 
+        const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbzZd0ojXLjvCn6OnFQbAoHaznt2wA-Zn7MoIrL1RAqI-qus1nPlbbnCZO5J5oZJvAyP/exec';
+
         let state = {
             view: 'landing',
             role: null, // 'siswa' | 'admin' | null
             currentUser: null,
-            gasUrl: localStorage.getItem('cbt_gas_url') || '',
+            gasUrl: localStorage.getItem('cbt_gas_url') || DEFAULT_GAS_URL,
             connected: false,
             siswaList: JSON.parse(localStorage.getItem('cbt_siswa')) || DEFAULT_SISWA,
             kategoriList: JSON.parse(localStorage.getItem('cbt_kategori')) || DEFAULT_KATEGORI,
@@ -1258,7 +1253,7 @@
         };
 
         function syncSavedGasUrlAcrossMenus(showLoginPanel = false) {
-            const savedUrl = (localStorage.getItem('cbt_gas_url') || state.gasUrl || '').trim();
+            const savedUrl = (localStorage.getItem('cbt_gas_url') || state.gasUrl || DEFAULT_GAS_URL).trim();
             if (savedUrl) {
                 state.gasUrl = savedUrl;
             }
@@ -1535,8 +1530,11 @@
             const icon = document.getElementById(iconId);
             if (icon) icon.classList.add('fa-spin');
 
-            // Otomatis tempel URL database yang tersimpan di Dasbor Admin saat klik Sinkron/Refresh
-            syncSavedGasUrlAcrossMenus(source === 'login');
+            // URL Spreadsheet tertanam langsung pada tombol Sinkron/Refresh agar langsung tersambung
+            const activeGasUrl = (localStorage.getItem('cbt_gas_url') || state.gasUrl || DEFAULT_GAS_URL).trim();
+            state.gasUrl = activeGasUrl;
+            localStorage.setItem('cbt_gas_url', activeGasUrl);
+            syncSavedGasUrlAcrossMenus(false);
 
             try {
                 if (state.gasUrl) {
@@ -1682,70 +1680,44 @@
             const urlInput = document.getElementById('regGasUrlInput');
             const panel = document.getElementById('regDbLinkPanel');
 
-            if (urlInput) urlInput.value = savedUrl || '';
+            if (urlInput) urlInput.value = savedUrl || DEFAULT_GAS_URL;
             if (panel) {
-                if (savedUrl) {
-                    panel.classList.remove('hidden');
-                } else {
-                    panel.classList.add('hidden');
-                }
+                panel.classList.add('hidden');
             }
 
             if (dot && text) {
                 if (state.connected && savedUrl) {
                     dot.className = 'h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0';
-                    text.innerText = 'Terhubung ke Database (URL Admin)';
+                    text.innerText = 'Database Tersambung';
                     text.className = 'text-[11px] font-bold text-emerald-700 truncate';
-                } else if (savedUrl) {
-                    dot.className = 'h-2.5 w-2.5 rounded-full bg-sky-500 shrink-0';
-                    text.innerText = 'URL Admin Tertempel Otomatis';
-                    text.className = 'text-[11px] font-bold text-sky-700 truncate';
                 } else {
-                    dot.className = 'h-2.5 w-2.5 rounded-full bg-amber-400 shrink-0';
-                    text.innerText = 'Database Belum Tertaut';
+                    dot.className = 'h-2.5 w-2.5 rounded-full bg-sky-500 shrink-0';
+                    text.innerText = 'Klik Tautkan Database';
                     text.className = 'text-[11px] font-bold text-slate-600 truncate';
                 }
             }
         }
 
         async function toggleOrConnectRegisterDb() {
-            const panel = document.getElementById('regDbLinkPanel');
             const urlInput = document.getElementById('regGasUrlInput');
-            if (!panel) return;
-
-            // Jika panel sedang tertutup dan URL sudah tersimpan, langsung hubungkan ke database
-            if (panel.classList.contains('hidden') && state.gasUrl && !state.connected) {
-                if (urlInput) urlInput.value = state.gasUrl;
-                await connectDatabaseFromRegister();
-                return;
-            }
-
-            // Buka/tutup panel input URL database agar pengguna dapat menempel atau mengubah tautan
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden') && urlInput) {
-                urlInput.value = state.gasUrl || '';
-                urlInput.focus();
-            }
+            const targetUrl = (localStorage.getItem('cbt_gas_url') || state.gasUrl || DEFAULT_GAS_URL).trim();
+            state.gasUrl = targetUrl;
+            if (urlInput) urlInput.value = targetUrl;
+            await connectDatabaseFromRegister();
         }
 
         async function connectDatabaseFromRegister() {
             const urlInput = document.getElementById('regGasUrlInput');
             const btnConnect = document.getElementById('btnConnectRegDb');
+            const btnTautkan = document.getElementById('btnRegTautkanDb');
             const icon = document.getElementById('iconRegTautkanDb');
-            const url = (urlInput?.value || state.gasUrl || '').trim();
-
-            if (!url) {
-                const panel = document.getElementById('regDbLinkPanel');
-                if (panel) panel.classList.remove('hidden');
-                if (urlInput) urlInput.focus();
-                showToast('Masukkan URL Web App Google Spreadsheet terlebih dahulu!', 'warning');
-                return;
-            }
+            const url = (urlInput?.value || state.gasUrl || DEFAULT_GAS_URL).trim();
 
             if (btnConnect) {
                 btnConnect.disabled = true;
                 btnConnect.innerText = 'Menghubungkan...';
             }
+            if (btnTautkan) btnTautkan.disabled = true;
             if (icon) icon.className = 'fa-solid fa-spinner fa-spin';
 
             try {
@@ -1754,8 +1726,7 @@
                 if (data && data.status === 'success') {
                     state.gasUrl = url;
                     localStorage.setItem('cbt_gas_url', url);
-                    const adminGasInput = document.getElementById('gasUrlInput');
-                    if (adminGasInput) adminGasInput.value = url;
+                    syncSavedGasUrlAcrossMenus(false);
                     updateConnectionBadge(true, 'Spreadsheet Terhubung');
                     updateRegisterDbLinkUI();
                     showToast('Database berhasil ditautkan! Pendaftaran akan langsung tersimpan ke database.', 'success');
@@ -1764,14 +1735,13 @@
                 }
             } catch (err) {
                 updateConnectionBadge(false, 'Koneksi Gagal');
-                const panel = document.getElementById('regDbLinkPanel');
-                if (panel) panel.classList.remove('hidden');
-                showToast('Gagal menautkan database! Periksa URL Deployment Google Apps Script.', 'danger');
+                showToast('Gagal menautkan database! Periksa koneksi internet atau deployment Apps Script.', 'danger');
             } finally {
                 if (btnConnect) {
                     btnConnect.disabled = false;
                     btnConnect.innerText = 'Hubungkan';
                 }
+                if (btnTautkan) btnTautkan.disabled = false;
                 if (icon) icon.className = 'fa-solid fa-link';
             }
         }
@@ -3028,7 +2998,7 @@
             const user = document.getElementById('adminUsername').value.trim();
             const pass = document.getElementById('adminPassword').value;
 
-            if (user === 'admin' && pass === 'admin123') {
+            if (user === 'admin' && pass === 'agis1122') {
                 state.role = 'admin';
                 state.currentUser = { username: 'admin', nama: 'Administrator' };
                 renderAllAdminViews();
