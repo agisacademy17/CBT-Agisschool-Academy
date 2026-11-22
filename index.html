@@ -66,7 +66,7 @@
             left: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-            z-index: 9999 !important;
+            z-index: 60 !important;
             background-color: #f8fafc !important;
             overflow-y: auto !important;
         }
@@ -332,7 +332,7 @@
 
         <!-- SECTION 3: HASIL UJIAN (RESULT VIEW) -->
         <section id="resultView" class="hidden flex-grow flex items-center justify-center px-4 py-12 bg-slate-50">
-            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 max-w-lg w-full p-8 text-center space-y-6">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 max-w-xl w-full p-6 sm:p-8 text-center space-y-6">
                 <div class="h-20 w-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl">
                     <i class="fa-solid fa-trophy"></i>
                 </div>
@@ -358,6 +358,34 @@
                         <span id="resultEmpty" class="text-lg font-extrabold text-slate-800">0</span>
                     </div>
                 </div>
+
+                <!-- Rincian Nomor Soal Benar / Salah / Kosong -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rincian Hasil Per Nomor Soal</h4>
+                        <div class="flex items-center gap-3 text-[10px] font-bold text-slate-500">
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>Benar</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>Salah</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span>Kosong</span>
+                        </div>
+                    </div>
+                    <div id="resultNumberGrid" class="flex flex-wrap gap-2"></div>
+                    <div class="pt-2.5 border-t border-slate-200 space-y-1.5 text-xs">
+                        <div class="flex items-start gap-2">
+                            <span class="font-bold text-emerald-700 shrink-0">Nomor Benar:</span>
+                            <span id="resultCorrectNumbers" class="text-slate-700 font-medium">-</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="font-bold text-red-600 shrink-0">Nomor Salah:</span>
+                            <span id="resultWrongNumbers" class="text-slate-700 font-medium">-</span>
+                        </div>
+                        <div id="resultEmptyNumbersRow" class="hidden flex items-start gap-2">
+                            <span class="font-bold text-slate-500 shrink-0">Nomor Kosong:</span>
+                            <span id="resultEmptyNumbers" class="text-slate-600 font-medium">-</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex flex-col sm:flex-row gap-3 pt-2">
                     <button onclick="backToSiswaRules()" class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-bold transition">Pilih Ujian Lain</button>
                     <button onclick="logoutSession()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Keluar Portal</button>
@@ -1360,8 +1388,9 @@
             confirmCallback = onConfirm;
             const actionBtn = document.getElementById('confirmModalActionBtn');
             actionBtn.onclick = function() {
+                const cb = confirmCallback;
                 closeConfirmModal();
-                if (typeof confirmCallback === 'function') confirmCallback();
+                if (typeof cb === 'function') cb();
             };
             document.getElementById('confirmModal').classList.remove('hidden');
         }
@@ -2934,16 +2963,12 @@
             renderAllAdminViews();
 
             if (state.gasUrl) {
-                try {
-                    await fetch(state.gasUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'submit_rekap', rekap: record })
-                    });
-                } catch (err) {
-                    console.error('Rekap sync error:', err);
-                }
+                fetch(state.gasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'submit_rekap', rekap: record })
+                }).catch(err => console.error('Rekap sync error:', err));
             }
 
             examSession.active = false;
@@ -2953,8 +2978,46 @@
             document.getElementById('resultWrong').innerText = wrong;
             document.getElementById('resultEmpty').innerText = empty;
 
+            // Tampilkan rincian nomor soal yang benar, salah, dan kosong
+            const numGrid = document.getElementById('resultNumberGrid');
+            if (numGrid) {
+                numGrid.innerHTML = detailJawaban.map(item => {
+                    const cls = item.status === 'Benar'
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                        : (item.status === 'Salah'
+                            ? 'bg-red-100 text-red-700 border-red-300'
+                            : 'bg-slate-200 text-slate-600 border-slate-300');
+                    const icon = item.status === 'Benar'
+                        ? '<i class="fa-solid fa-check text-[9px] ml-0.5"></i>'
+                        : (item.status === 'Salah'
+                            ? '<i class="fa-solid fa-xmark text-[9px] ml-0.5"></i>'
+                            : '');
+                    return `<span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg border text-xs font-extrabold ${cls}" title="Soal No. ${item.no}: ${item.status}">${item.no}${icon}</span>`;
+                }).join('');
+            }
+
+            const benarNums = detailJawaban.filter(d => d.status === 'Benar').map(d => `No. ${d.no}`);
+            const salahNums = detailJawaban.filter(d => d.status === 'Salah').map(d => `No. ${d.no}`);
+            const kosongNums = detailJawaban.filter(d => d.status === 'Kosong').map(d => `No. ${d.no}`);
+
+            const elBenarNums = document.getElementById('resultCorrectNumbers');
+            const elSalahNums = document.getElementById('resultWrongNumbers');
+            const elKosongRow = document.getElementById('resultEmptyNumbersRow');
+            const elKosongNums = document.getElementById('resultEmptyNumbers');
+
+            if (elBenarNums) elBenarNums.innerText = benarNums.length > 0 ? benarNums.join(', ') : 'Tidak ada';
+            if (elSalahNums) elSalahNums.innerText = salahNums.length > 0 ? salahNums.join(', ') : 'Tidak ada';
+            if (elKosongRow && elKosongNums) {
+                if (kosongNums.length > 0) {
+                    elKosongNums.innerText = kosongNums.join(', ');
+                    elKosongRow.classList.remove('hidden');
+                } else {
+                    elKosongRow.classList.add('hidden');
+                }
+            }
+
             navigateTo('result');
-            showToast('Hasil ujian berhasil disimpan!', 'success');
+            showToast('Jawaban berhasil dikumpulkan dan tersimpan!', 'success');
         }
 
         /* =========================================================
