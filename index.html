@@ -151,9 +151,9 @@
                     <button onclick="navigateTo('landing')" class="inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-800 transition">
                         <i class="fa-solid fa-arrow-left mr-1.5"></i>Kembali ke Beranda
                     </button>
-                    <button type="button" id="btnRefreshSiswaLogin" onclick="refreshSiswaDatabase('login')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-primary-50 text-slate-600 hover:text-primary-700 text-xs font-bold transition" title="Muat ulang data akun terbaru dari database">
+                    <button type="button" id="btnRefreshSiswaLogin" onclick="refreshSiswaDatabase('login')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-primary-50 text-slate-600 hover:text-primary-700 text-xs font-bold transition" title="Sinkronkan & muat ulang data akun terbaru dari database">
                         <i id="iconRefreshLogin" class="fa-solid fa-arrows-rotate"></i>
-                        <span>Refresh Data</span>
+                        <span>Sinkron / Refresh</span>
                     </button>
                 </div>
                 <div class="text-center mb-6">
@@ -163,6 +163,14 @@
                     <h2 class="text-2xl font-bold text-slate-900">Portal Masuk Siswa</h2>
                     <p class="text-xs text-slate-500 mt-1">Masukkan nomor peserta dan kata sandi Anda</p>
                     <p id="siswaLoginSyncInfo" class="text-[11px] text-emerald-600 font-semibold mt-1.5 hidden"></p>
+                    <!-- Panel URL Database Otomatis dari Admin -->
+                    <div id="siswaLoginSyncPanel" class="hidden mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-left space-y-1">
+                        <label for="siswaLoginGasUrlInput" class="block text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                            <i class="fa-solid fa-link text-primary-600"></i>
+                            <span>URL Database Spreadsheet (Otomatis dari Admin)</span>
+                        </label>
+                        <input type="url" id="siswaLoginGasUrlInput" readonly placeholder="Belum ada URL database dari Admin" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-[11px] font-mono text-slate-600 focus:outline-none">
+                    </div>
                 </div>
                 <form id="loginForm" onsubmit="handleSiswaLogin(event)" class="space-y-4">
                     <div>
@@ -1214,15 +1222,42 @@
             saveToLocalStorage();
             generateGoogleAppsScriptCode();
             renderAllAdminViews();
-            const gasInput = document.getElementById('gasUrlInput');
-            if (state.gasUrl && gasInput) {
-                gasInput.value = state.gasUrl;
+            syncSavedGasUrlAcrossMenus();
+            if (state.gasUrl) {
                 updateConnectionBadge(true, 'Spreadsheet Terkonfigurasi');
             }
             window.addEventListener('storage', handleStorageSync);
         };
 
+        function syncSavedGasUrlAcrossMenus(showLoginPanel = false) {
+            const savedUrl = (localStorage.getItem('cbt_gas_url') || state.gasUrl || '').trim();
+            if (savedUrl) {
+                state.gasUrl = savedUrl;
+            }
+            const adminGasInput = document.getElementById('gasUrlInput');
+            if (adminGasInput && savedUrl) adminGasInput.value = savedUrl;
+
+            const regGasInput = document.getElementById('regGasUrlInput');
+            if (regGasInput && savedUrl) regGasInput.value = savedUrl;
+
+            const loginGasInput = document.getElementById('siswaLoginGasUrlInput');
+            if (loginGasInput) loginGasInput.value = savedUrl;
+
+            const loginPanel = document.getElementById('siswaLoginSyncPanel');
+            if (loginPanel && showLoginPanel && savedUrl) {
+                loginPanel.classList.remove('hidden');
+            }
+            return savedUrl;
+        }
+
         function handleStorageSync(e) {
+            if (e.key === 'cbt_gas_url') {
+                const syncedUrl = syncSavedGasUrlAcrossMenus();
+                updateRegisterDbLinkUI();
+                if (syncedUrl) {
+                    updateConnectionBadge(true, 'Spreadsheet Terkonfigurasi');
+                }
+            }
             if (e.key === 'cbt_exam_control' || e.key === 'cbt_violations') {
                 syncSecurityStateFromStorage();
                 if (examSession.active) {
@@ -1341,6 +1376,11 @@
             document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
             const target = document.getElementById(view + 'View');
             if (target) target.classList.remove('hidden');
+
+            if (view === 'siswaAuth') {
+                syncSavedGasUrlAcrossMenus();
+                updateRegisterDbLinkUI();
+            }
 
             const btnExit = document.getElementById('btnExitPortal');
             if (btnExit) {
@@ -1465,6 +1505,9 @@
             const iconId = source === 'admin' ? 'iconRefreshAdmin' : 'iconRefreshLogin';
             const icon = document.getElementById(iconId);
             if (icon) icon.classList.add('fa-spin');
+
+            // Otomatis tempel URL database yang tersimpan di Dasbor Admin saat klik Sinkron/Refresh
+            syncSavedGasUrlAcrossMenus(source === 'login');
 
             try {
                 if (state.gasUrl) {
@@ -1604,22 +1647,29 @@
         }
 
         function updateRegisterDbLinkUI() {
+            const savedUrl = syncSavedGasUrlAcrossMenus();
             const dot = document.getElementById('regDbStatusDot');
             const text = document.getElementById('regDbStatusText');
             const urlInput = document.getElementById('regGasUrlInput');
             const panel = document.getElementById('regDbLinkPanel');
 
-            if (urlInput) urlInput.value = state.gasUrl || '';
-            if (panel) panel.classList.add('hidden');
+            if (urlInput) urlInput.value = savedUrl || '';
+            if (panel) {
+                if (savedUrl) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            }
 
             if (dot && text) {
-                if (state.connected && state.gasUrl) {
+                if (state.connected && savedUrl) {
                     dot.className = 'h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0';
-                    text.innerText = 'Terhubung ke Database';
+                    text.innerText = 'Terhubung ke Database (URL Admin)';
                     text.className = 'text-[11px] font-bold text-emerald-700 truncate';
-                } else if (state.gasUrl) {
+                } else if (savedUrl) {
                     dot.className = 'h-2.5 w-2.5 rounded-full bg-sky-500 shrink-0';
-                    text.innerText = 'URL Siap (Klik Tautkan)';
+                    text.innerText = 'URL Admin Tertempel Otomatis';
                     text.className = 'text-[11px] font-bold text-sky-700 truncate';
                 } else {
                     dot.className = 'h-2.5 w-2.5 rounded-full bg-amber-400 shrink-0';
@@ -4129,6 +4179,8 @@
 
             state.gasUrl = url;
             localStorage.setItem('cbt_gas_url', url);
+            syncSavedGasUrlAcrossMenus();
+            updateRegisterDbLinkUI();
             showToast('Menguji koneksi Google Apps Script...', 'info');
 
             try {
